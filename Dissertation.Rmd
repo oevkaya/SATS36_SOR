@@ -1,0 +1,1934 @@
+---
+title: "Dissertation_draft"
+author: "Qinxuan Li"
+date: "2023-06-16"
+output:
+  pdf_document: default
+  html_document: default
+---
+```{r, message=FALSE}
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(reshape2)
+library(boot)
+library(ez)
+library(lavaan)
+library(semPlot)
+library(psych)
+library(car)
+```
+
+
+# Step 1:Load and clean the dataset
+```{r, message=FALSE}
+library(readxl)
+Pre_2022 <- read_xlsx("/Users/liqinxuan/Desktop/Dissertation/SATS_2022_Pre_Anon.xlsx")
+Post_2022 <- read_xlsx("/Users/liqinxuan/Desktop/Dissertation/SATS_2022_Post_Anon.xlsx")
+Pre_2023 <- read_xlsx("/Users/liqinxuan/Desktop/Dissertation/SATS_2023_Pre_Anon.xlsx")
+Post_2023 <- read_xlsx("/Users/liqinxuan/Desktop/Dissertation/SATS_2023_Post_Anon.xlsx")
+Demo_2022 <- read_xlsx("/Users/liqinxuan/Desktop/Dissertation/SATS_2022_Demographic_Anon.xlsx")
+
+# Simplify the name of each column
+# 2022 Pre
+Pre_2022 <- rename(Pre_2022, Consent =
+                     "(Consent) Do you consent to participating in the study?")
+Pre_2022 <- rename(Pre_2022, Validate =
+                     "(Validate) Show that you are reading the statements by selecting Strongly Disagree.")
+# Get current column names
+Pre_2022_colnames_old <- colnames(Pre_2022)
+# Generate new names for columns 5 to 33
+Pre_2022_new_names <- paste0("Q", 1:29)  # This creates a vector c("Q1", "Q2", ..., "Q29")
+# Replace the names of columns 5 to 33 in the 'colnames_old' vector
+Pre_2022_colnames_old[5:33] <- Pre_2022_new_names
+# Generate new names for columns 35 to the end
+Pre_2022_num_remaining_cols <- ncol(Pre_2022) - 34
+Pre_2022_new_names <- paste0("Q", 30:36)
+# Replace the names of columns 25 to the end in the 'colnames_old' vector
+Pre_2022_colnames_old[(34+1):ncol(Pre_2022)] <- Pre_2022_new_names
+# Assign the updated names to the dataframe
+colnames(Pre_2022) <- Pre_2022_colnames_old
+# Remove AnonID HKY and LMT
+Pre_2022 <- Pre_2022[!(Pre_2022$AnonID %in% c("HKY", "LMT")), ]
+
+# 2022 Post
+Post_2022 <- rename(Post_2022, Consent = "(Consent) Do you consent to participating in the study?")
+Post_2022 <- rename(Post_2022, Validate = "(Validate) Show that you are reading the statements by selecting Strongly Agree.")
+# Get current column names
+Post_2022_colnames_old <- colnames(Post_2022)
+# Generate new names for columns 5 to 27
+Post_2022_new_names <- paste0("Q", 1:23)  # This creates a vector c("Q1", "Q2", ..., "Q29")
+# Replace the names of columns 5 to 27 in the 'colnames_old' vector
+Post_2022_colnames_old[5:27] <- Post_2022_new_names
+# Generate new names for columns 29 to the end
+Post_2022_num_remaining_cols <- ncol(Post_2022) - 28
+Post_2022_new_names <- paste0("Q", 24:36)
+# Replace the names of columns 25 to the end in the 'colnames_old' vector
+Post_2022_colnames_old[(28+1):ncol(Post_2022)] <- Post_2022_new_names
+# Assign the updated names to the dataframe
+colnames(Post_2022) <- Post_2022_colnames_old
+# Remove AnonID HKY and LMT
+Post_2022 <- Post_2022[!(Post_2022$AnonID %in% c("HKY", "LMT")), ]
+
+# 2023 Pre
+Pre_2023 <- rename(Pre_2023, Consent = "(Consent) Do you consent to participating in the study?")
+Pre_2023 <- rename(Pre_2023, Validate = "(Validate) Show that you are reading the statements by selecting Strongly Disagree.")
+# Get current column names
+Pre_2023_colnames_old <- colnames(Pre_2023)
+# Generate new names for columns 5 to 33
+Pre_2023_new_names <- paste0("Q", 1:29)  # This creates a vector c("Q1", "Q2", ..., "Q29")
+# Replace the names of columns 5 to 33 in the 'colnames_old' vector
+Pre_2023_colnames_old[5:33] <- Pre_2023_new_names
+# Generate new names for columns 35 to the end
+Pre_2023_num_remaining_cols <- ncol(Pre_2023) - 34
+Pre_2023_new_names <- paste0("Q", 30:36)
+# Replace the names of columns 25 to the end in the 'colnames_old' vector
+Pre_2023_colnames_old[(34+1):ncol(Pre_2023)] <- Pre_2023_new_names
+# Assign the updated names to the dataframe
+colnames(Pre_2023) <- Pre_2023_colnames_old
+
+# 2023 Post
+Post_2023 <- rename(Post_2023, Consent = "(Consent) Do you consent to participating in the study?")
+Post_2023 <- rename(Post_2023, Validate = "(Validate) Show that you are reading the statements by selecting Strongly Agree.")
+# Get current column names
+Post_2023_colnames_old <- colnames(Post_2023)
+# Generate new names for columns 5 to 27
+Post_2023_new_names <- paste0("Q", 1:23)  # This creates a vector c("Q1", "Q2", ..., "Q29")
+# Replace the names of columns 5 to 27 in the 'colnames_old' vector
+Post_2023_colnames_old[5:27] <- Post_2023_new_names
+# Generate new names for columns 29 to the end
+Post_2023_num_remaining_cols <- ncol(Post_2023) - 28
+Post_2023_new_names <- paste0("Q", 24:36)
+# Replace the names of columns 25 to the end in the 'colnames_old' vector
+Post_2023_colnames_old[(28+1):ncol(Post_2023)] <- Post_2023_new_names
+# Assign the updated names to the dataframe
+colnames(Post_2023) <- Post_2023_colnames_old
+
+```
+
+Then we count the number of available and unavailable results
+```{r, message=FALSE}
+# Pre 2022
+# Count the number of "No, I do not consent" in the Consent column
+Pre_2022_consent_count <- Pre_2022 %>%
+  filter(Consent == "No, I do not consent") %>%
+  nrow()
+
+print(paste0("Number of 'No, I do not consent' responses: ", 
+             Pre_2022_consent_count))
+
+# Remove the rows with "No, I do not consent" in the Consent column
+Pre_2022_clean_consent <- Pre_2022 %>%
+  filter(Consent != "No, I do not consent")
+
+# Count the number of responses that are not "Strongly Disagree" in the Validate column
+Pre_2022_validate_count <- Pre_2022_clean_consent %>%
+  filter(Validate != "Strongly Disagree") %>%
+  nrow()
+
+print(paste0("Number of responses not 'Strongly Disagree' in the Validate column: ",
+             Pre_2022_validate_count))
+
+# Remove the rows without "Strongly Disagree" in the Validate column
+Pre_2022_clean <- Pre_2022_clean_consent %>%
+  filter(Validate == "Strongly Disagree")
+
+# Calculate the number of original rows (total responses)
+Pre_2022_total_responses <- nrow(Pre_2022)
+
+# Calculate the number of remaining rows (available results)
+Pre_2022_available_results <- nrow(Pre_2022_clean)
+
+# Calculate the number of unavailable results
+Pre_2022_unavailable_results <- Pre_2022_total_responses - 
+  Pre_2022_available_results
+
+# Print the results
+print(paste("Total responses in Pre_2022: ", Pre_2022_total_responses))
+print(paste("Available results in Pre_2022: ", Pre_2022_available_results))
+print(paste("Unavailable results in Pre_2022: ", Pre_2022_unavailable_results))
+
+```
+
+The number of unavailable results is not equal to the sum of Number of 'No, I do not consent' responses and Number of responses not 'Strongly Disagree' in the Validate column because some results show "Yes, I consent" but NA in every column.
+
+
+```{r, message=FALSE}
+# Post 2022
+# Count the number of "No, I do not consent" in the Consent column
+Post_2022_consent_count <- Post_2022 %>%
+  filter(Consent == "No, I do not consent") %>%
+  nrow()
+
+print(paste0("Number of 'No, I do not consent' responses: ", Post_2022_consent_count))
+
+# Remove the rows with "No, I do not consent" in the Consent column
+Post_2022_clean_consent <- Post_2022 %>%
+  filter(Consent != "No, I do not consent")
+
+# Count the number of responses that are not "Strongly Disagree" in the Validate column
+Post_2022_validate_count <- Post_2022_clean_consent %>%
+  filter(Validate != "Strongly Agree") %>%
+  nrow()
+
+print(paste0("Number of responses not 'Strongly Agree' in the Validate column: ",
+             Post_2022_validate_count))
+
+# Remove the rows without "Strongly Disagree" in the Validate column
+Post_2022_clean <- Post_2022_clean_consent %>%
+  filter(Validate == "Strongly Agree")
+
+# Calculate the number of original rows (total responses)
+Post_2022_total_responses <- nrow(Post_2022)
+
+# Calculate the number of remaining rows (available results)
+Post_2022_available_results <- nrow(Post_2022_clean)
+
+# Calculate the number of unavailable results
+Post_2022_unavailable_results <- Post_2022_total_responses - 
+  Post_2022_available_results
+
+# Print the results
+print(paste("Total responses in Post_2022: ", Post_2022_total_responses))
+print(paste("Available results in Post_2022: ", Post_2022_available_results))
+print(paste("Unavailable results in Post_2022: ", Post_2022_unavailable_results))
+
+```
+
+```{r, message=FALSE}
+# Pre 2023
+# Count the number of "No, I do not consent" in the Consent column
+Pre_2023_consent_count <- Pre_2023 %>%
+  filter(Consent == "No, I do not consent") %>%
+  nrow()
+
+print(paste0("Number of 'No, I do not consent' responses: ", Pre_2023_consent_count))
+
+# Remove the rows with "No, I do not consent" in the Consent column
+Pre_2023_clean_consent <- Pre_2023 %>%
+  filter(Consent != "No, I do not consent")
+
+# Count the number of responses that are not "Strongly Disagree" in the Validate column
+Pre_2023_validate_count <- Pre_2023_clean_consent %>%
+  filter(Validate != "Strongly Disagree") %>%
+  nrow()
+
+print(paste0("Number of responses not 'Strongly Disagree' in the Validate column: ",
+             Pre_2023_validate_count))
+
+# Remove the rows without "Strongly Disagree" in the Validate column
+Pre_2023_clean <- Pre_2023_clean_consent %>%
+  filter(Validate == "Strongly Disagree")
+
+# Calculate the number of original rows (total responses)
+Pre_2023_total_responses <- nrow(Pre_2023)
+
+# Calculate the number of remaining rows (available results)
+Pre_2023_available_results <- nrow(Pre_2023_clean)
+
+# Calculate the number of unavailable results
+Pre_2023_unavailable_results <- Pre_2023_total_responses - 
+  Pre_2023_available_results
+
+# Print the results
+print(paste("Total responses in Pre_2023: ", Pre_2023_total_responses))
+print(paste("Available results in Pre_2023: ", Pre_2023_available_results))
+print(paste("Unavailable results in Pre_2023: ", Pre_2023_unavailable_results))
+```
+
+```{r, message=FALSE}
+# Post 2023
+# Count the number of "No, I do not consent" in the Consent column
+Post_2023_consent_count <- Post_2023 %>%
+  filter(Consent == "No, I do not consent") %>%
+  nrow()
+
+print(paste0("Number of 'No, I do not consent' responses: ", Post_2023_consent_count))
+
+# Remove the rows with "No, I do not consent" in the Consent column
+Post_2023_clean_consent <- Post_2023 %>%
+  filter(Consent != "No, I do not consent")
+
+# Count the number of responses that are not "Strongly Disagree" in the Validate column
+Post_2023_validate_count <- Post_2023_clean_consent %>%
+  filter(Validate != "Strongly Agree") %>%
+  nrow()
+
+print(paste0("Number of responses not 'Strongly Agree' in the Validate column: ",
+             Post_2023_validate_count))
+
+# Remove the rows without "Strongly Disagree" in the Validate column
+Post_2023_clean <- Post_2023_clean_consent %>%
+  filter(Validate == "Strongly Agree")
+
+# Calculate the number of original rows (total responses)
+Post_2023_total_responses <- nrow(Post_2023)
+
+# Calculate the number of remaining rows (available results)
+Post_2023_available_results <- nrow(Post_2023_clean)
+
+# Calculate the number of unavailable results
+Post_2023_unavailable_results <- Post_2023_total_responses - Post_2023_available_results
+
+# Print the results
+print(paste("Total responses in Post_2023: ", Post_2023_total_responses))
+print(paste("Available results in Post_2023: ", Post_2023_available_results))
+print(paste("Unavailable results in Post_2023: ", Post_2023_unavailable_results))
+
+```
+
+```{r, message=FALSE}
+# Create a new dataframe to hold the summary
+summary_available <- data.frame(
+  Table = c("Pre 2022", "Post 2022", "Pre 2023", "Post 2023"),
+  Available_Results = c(Pre_2022_available_results, Post_2022_available_results, 
+                        Pre_2023_available_results, Post_2023_available_results),
+  Unavailable_Results = c(Pre_2022_unavailable_results, Post_2022_unavailable_results, 
+                          Pre_2023_unavailable_results, Post_2023_unavailable_results),
+  Total_responses = c(Pre_2022_total_responses, Post_2022_total_responses, 
+                      Pre_2023_total_responses, Post_2023_total_responses)
+)
+
+print(summary_available)
+```
+
+# Step 2: Convert answers to numbers of each question
+```{r, warning=FALSE, message=FALSE}
+library(dplyr)
+# Define a vector for the responses
+responses <- c("Strongly Agree", "Agree", "Somewhat Agree", "Neither Agree or Disagree", "Somewhat Disagree", "Disagree", "Strongly Disagree")
+
+# Define a vector for the scores
+scores <- c(7, 6, 5, 4, 3, 2, 1)
+
+# Define the column names
+columns <- c(paste0("Q", 1:8), paste0("Q", 10:36))  # Exclude Q9
+
+# Define negatively worded questions
+negatively_worded_questions <- c("Q4", "Q5", "Q7", "Q8", "Q11", "Q13", "Q15", "Q16", "Q18","Q21", "Q24", "Q25", "Q26", "Q28", "Q30", "Q33", "Q34", "Q35", "Q36") # replace these with your actual negatively worded questions
+
+# Convert responses to scores
+for (column in columns) {
+  Pre_2022_clean[[column]] <- recode(Pre_2022_clean[[column]], 
+                                     !!!setNames(scores, responses))
+  
+  # Reverse scores for negatively worded questions
+  if (column %in% negatively_worded_questions) {
+    Pre_2022_clean[[column]] <- 8 - Pre_2022_clean[[column]]
+  }
+}
+
+columns <- paste0("Q", 1:36)
+
+for (column in columns) {
+  Post_2022_clean[[column]] <- recode(Post_2022_clean[[column]], 
+                                      !!!setNames(scores, responses))
+  
+  # Reverse scores for negatively worded questions
+  if (column %in% negatively_worded_questions) {
+    Post_2022_clean[[column]] <- 8 - Post_2022_clean[[column]]
+  }
+}
+
+for (column in columns) {
+  Pre_2023_clean[[column]] <- recode(Pre_2023_clean[[column]], 
+                                     !!!setNames(scores, responses))
+  
+  # Reverse scores for negatively worded questions
+  if (column %in% negatively_worded_questions) {
+    Pre_2023_clean[[column]] <- 8 - Pre_2023_clean[[column]]
+  }
+}
+
+for (column in columns) {
+  Post_2023_clean[[column]] <- recode(Post_2023_clean[[column]],
+                                      !!!setNames(scores, responses))
+  
+  # Reverse scores for negatively worded questions
+  if (column %in% negatively_worded_questions) {
+    Post_2023_clean[[column]] <- 8 - Post_2023_clean[[column]]
+  }
+}
+
+```
+
+# Step 3: Calculate Scores of each component
+```{r, message=FALSE}
+# Pre 2022
+# Create new columns for the means
+Pre_2022_clean$Affect <- rowMeans(Pre_2022_clean[c("Q3", "Q4", "Q15", "Q18", "Q19", "Q28")], na.rm = TRUE)
+Pre_2022_clean$Cognitive_Competence <- rowMeans(Pre_2022_clean[c("Q5", "Q11", "Q26", "Q31", "Q32", "Q35")], na.rm = TRUE)
+Pre_2022_clean$Value <- rowMeans(Pre_2022_clean[c("Q7", "Q10", "Q13", "Q16", "Q17", "Q21", "Q25", "Q33")], na.rm = TRUE)
+Pre_2022_clean$Difficulty <- rowMeans(Pre_2022_clean[c("Q6", "Q8", "Q22", "Q24", "Q30", "Q34", "Q36")], na.rm = TRUE)
+Pre_2022_clean$Interest <- rowMeans(Pre_2022_clean[c("Q12", "Q20", "Q23", "Q29")], na.rm = TRUE)
+Pre_2022_clean$Effort <- rowMeans(Pre_2022_clean[c("Q1", "Q2", "Q14", "Q27")], na.rm = TRUE)
+
+```
+
+```{r, message=FALSE}
+# Post 2022
+# Create new columns for the means
+Post_2022_clean$Affect <- rowMeans(Post_2022_clean[c("Q3", "Q4", "Q15", "Q18",
+                                                     "Q19", "Q28")], na.rm = TRUE)
+Post_2022_clean$Cognitive_Competence <- rowMeans(Post_2022_clean[c("Q5", "Q11",
+                                                                   "Q26", "Q31",
+                                                                   "Q32", "Q35")],
+                                                 na.rm = TRUE)
+#!!!!!!!!!!!!!ignore Q9
+Post_2022_clean$Value <- rowMeans(Post_2022_clean[c("Q7", "Q10", "Q13", "Q16",
+                                                    "Q17", "Q21", "Q25", "Q33")],
+                                  na.rm = TRUE)
+Post_2022_clean$Difficulty <- rowMeans(Post_2022_clean[c("Q6", "Q8", "Q22", 
+                                                         "Q24", "Q30", "Q34", "Q36")],
+                                       na.rm = TRUE)
+Post_2022_clean$Interest <- rowMeans(Post_2022_clean[c("Q12", "Q20", "Q23", "Q29")],
+                                     na.rm = TRUE)
+Post_2022_clean$Effort <- rowMeans(Post_2022_clean[c("Q1", "Q2", "Q14", "Q27")],
+                                   na.rm = TRUE)
+
+```
+
+```{r, message=FALSE}
+# Pre 2023
+# Create new columns for the means
+Pre_2023_clean$Affect <- rowMeans(Pre_2023_clean[c("Q3", "Q4", "Q15", "Q18", "Q19",
+                                                   "Q28")], na.rm = TRUE)
+Pre_2023_clean$Cognitive_Competence <- rowMeans(Pre_2023_clean[c("Q5", "Q11", "Q26",
+                                                                 "Q31", "Q32", 
+                                                                 "Q35")], 
+                                                na.rm = TRUE)
+Pre_2023_clean$Value <- rowMeans(Pre_2023_clean[c("Q7", "Q9", "Q10", "Q13", "Q16",
+                                                  "Q17", "Q21", "Q25", "Q33")],
+                                 na.rm = TRUE)
+Pre_2023_clean$Difficulty <- rowMeans(Pre_2023_clean[c("Q6", "Q8", "Q22", "Q24",
+                                                       "Q30", "Q34", "Q36")], 
+                                      na.rm = TRUE)
+Pre_2023_clean$Interest <- rowMeans(Pre_2023_clean[c("Q12", "Q20", "Q23", "Q29")], 
+                                    na.rm = TRUE)
+Pre_2023_clean$Effort <- rowMeans(Pre_2023_clean[c("Q1", "Q2", "Q14", "Q27")], 
+                                  na.rm = TRUE)
+
+```
+
+```{r, message=FALSE}
+# Post 2023
+# Create new columns for the means
+Post_2023_clean$Affect <- rowMeans(Post_2023_clean[c("Q3", "Q4", "Q15", "Q18", 
+                                                     "Q19", "Q28")], na.rm = TRUE)
+Post_2023_clean$Cognitive_Competence <- rowMeans(Post_2023_clean[c("Q5", "Q11",
+                                                                   "Q26", "Q31",
+                                                                   "Q32", "Q35")], 
+                                                 na.rm = TRUE)
+Post_2023_clean$Value <- rowMeans(Post_2023_clean[c("Q7", "Q9", "Q10", "Q13", 
+                                                    "Q16", "Q17", "Q21", "Q25",
+                                                    "Q33")], na.rm = TRUE)
+Post_2023_clean$Difficulty <- rowMeans(Post_2023_clean[c("Q6", "Q8", "Q22", "Q24",
+                                                         "Q30", "Q34", "Q36")], 
+                                       na.rm = TRUE)
+Post_2023_clean$Interest <- rowMeans(Post_2023_clean[c("Q12", "Q20", "Q23", "Q29")],
+                                     na.rm = TRUE)
+Post_2023_clean$Effort <- rowMeans(Post_2023_clean[c("Q1", "Q2", "Q14", "Q27")],
+                                   na.rm = TRUE)
+
+```
+
+# Step 4: Calculate statistical characteristics and observe the distributions of each component
+```{r, message=FALSE}
+# Pre 2022
+# Calculate statistical characteristics
+Pre_2022_summary <- summary(Pre_2022_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")])
+print(Pre_2022_summary)
+
+# Calculate variance
+for(column in c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")) {
+  cat("Variance of", column, ":", var(Pre_2022_clean[[column]], na.rm = TRUE), "\n")
+}
+
+# Melt the data into long format for easier plotting
+Pre_2022_long <- melt(Pre_2022_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")], id.vars = NULL, variable.name = "Component", 
+                      value.name = "Score")
+
+# Create a histogram
+ggplot(Pre_2022_long, aes(x = Score)) +
+  geom_histogram(binwidth = 0.5, fill = "blue", alpha = 0.5) +
+  facet_wrap(~Component, scales = "free", nrow = 3, ncol = 2) +
+  theme_minimal() +
+  xlab("Score") +
+  ylab("Count") +
+  ggtitle("Distribution of Component Scores of Pre 2022")
+
+```
+
+```{r, message=FALSE}
+# Post 2022
+# Calculate statistical characteristics
+Post_2022_summary <- summary(Post_2022_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")])
+print(Post_2022_summary)
+
+# Calculate variance
+for(column in c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")) {
+  cat("Variance of", column, ":", var(Post_2022_clean[[column]], na.rm = TRUE), "\n")
+}
+
+# Melt the data into long format for easier plotting
+Post_2022_long <- melt(Post_2022_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")], id.vars = NULL, variable.name = "Component", 
+                      value.name = "Score")
+
+# Create a histogram
+ggplot(Post_2022_long, aes(x = Score)) +
+  geom_histogram(binwidth = 0.5, fill = "blue", alpha = 0.5) +
+  facet_wrap(~Component, scales = "free", nrow = 3, ncol = 2)  +
+  theme_minimal() +
+  xlab("Score") +
+  ylab("Count") +
+  ggtitle("Distribution of Component Scores of Post 2022")
+```
+
+Then we compare the distribution of scores for each component between the two results, now we just look at the overall picture of each result instead of matching the pre-course and post-course results for the same person:
+```{r, message=FALSE}
+# boxplots of 2022 
+# Add a new column to each dataframe to indicate whether it's pre or post
+Pre_2022_clean$Course <- "Pre"
+Post_2022_clean$Course <- "Post"
+
+# Combine the two dataframes
+combined_2022 <- rbind(Pre_2022_clean, Post_2022_clean)
+
+# Reshape the data into long format for easier plotting
+df_long_2022 <- melt(combined_2022[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort", "Course")], id.vars = "Course", 
+                     variable.name = "Component", value.name = "Score")
+
+# Convert 'Course' to a factor and specify the level order
+df_long_2022$Course <- factor(df_long_2022$Course, levels = c("Pre", "Post"))
+
+# Create boxplots
+ggplot(df_long_2022, aes(x = Component, y = Score, fill = Course)) +
+  geom_boxplot() +
+  theme_minimal() +
+  xlab("Component") +
+  ylab("Score") +
+  ggtitle("Comparison of Component Scores Between Pre- and Post-Course in 2022")
+
+
+# bar charts
+# Calculate mean scores
+df_mean_2022 <- df_long_2022 %>% 
+  group_by(Course, Component) %>%
+  summarise(Mean_Score = mean(Score, na.rm = TRUE))
+# Create side-by-side bar chart
+ggplot(df_mean_2022, aes(x = Component, y = Mean_Score, fill = Course)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.6) +
+  theme_minimal() +
+  xlab("Component") +
+  ylab("Mean Score") +
+  ggtitle("Comparison of Mean Component Scores Between Pre-Course and Post-Course")
+
+# Calculate variance for each component in both dataframes
+variance_pre <- sapply(Pre_2022_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")], var, na.rm = TRUE)
+variance_post <- sapply(Post_2022_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")], var, na.rm = TRUE)
+
+# Prepare a dataframe for plotting
+df_variance_2022 <- data.frame(
+  Component = rep(names(variance_pre), 2),
+  Variance = c(variance_pre, variance_post),
+  Course = rep(c("Pre", "Post"), each = length(variance_pre))
+)
+
+# Create side-by-side bar charts
+ggplot(df_variance_2022, aes(x = Component, y = Variance, fill = Course)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.6) +
+  theme_minimal() +
+  xlab("Component") +
+  ylab("Variance") +
+  ggtitle("Comparison of Variance of Component Scores Between Pre-Course and Post-Course")
+
+
+```
+
+
+
+```{r, message=FALSE}
+# Pre 2023
+# Calculate statistical characteristics
+Pre_2023_summary <- summary(Pre_2023_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")])
+print(Pre_2023_summary)
+
+# Calculate variance
+for(column in c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")) {
+  cat("Variance of", column, ":", var(Pre_2023_clean[[column]], na.rm = TRUE), "\n")
+}
+
+# Melt the data into long format for easier plotting
+Pre_2023_long <- melt(Pre_2023_clean[, c("Affect", "Cognitive_Competence", "Value",
+                                         "Difficulty", "Interest", "Effort")], 
+                      id.vars = NULL, variable.name = "Component", 
+                      value.name = "Score")
+
+# Create a histogram
+ggplot(Pre_2023_long, aes(x = Score)) +
+  geom_histogram(binwidth = 0.5, fill = "blue", alpha = 0.5) +
+  facet_wrap(~Component, scales = "free") +
+  theme_minimal() +
+  xlab("Score") +
+  ylab("Count") +
+  ggtitle("Distribution of Component Scores of Pre 2023")
+
+```
+
+```{r, message=FALSE}
+# Post 2023
+# Calculate statistical characteristics
+Post_2023_summary <- summary(Post_2023_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")])
+print(Post_2023_summary)
+
+# Calculate variance
+for(column in c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")) {
+  cat("Variance of", column, ":", var(Post_2023_clean[[column]], na.rm = TRUE), "\n")
+}
+
+# Melt the data into long format for easier plotting
+Post_2023_long <- melt(Post_2023_clean[, c("Affect", "Cognitive_Competence", 
+                                           "Value", "Difficulty", "Interest",
+                                           "Effort")], id.vars = NULL,
+                       variable.name = "Component", 
+                      value.name = "Score")
+
+# Create a histogram
+ggplot(Post_2023_long, aes(x = Score)) +
+  geom_histogram(binwidth = 0.5, fill = "blue", alpha = 0.5) +
+  facet_wrap(~Component, scales = "free") +
+  theme_minimal() +
+  xlab("Score") +
+  ylab("Count") +
+  ggtitle("Distribution of Component Scores of Post 2023")
+```
+
+# Step 5: Combine the pre and post results for the same person
+
+```{r, message=FALSE}
+# Merge the two dataframes on 'AnonID'
+combined_2022_individual <- merge(Pre_2022_clean, Post_2022_clean, by = "AnonID", 
+                                  suffixes = c("_pre", "_post"))
+
+# Check the first few rows of the combined dataframe
+head(combined_2022_individual)
+
+components_2022 <- c("Affect", "Cognitive_Competence", "Value", "Difficulty", 
+                     "Interest", "Effort")
+
+# Plot scatterplots for each component
+for (component in components_2022) {
+    p <- ggplot(combined_2022_individual, aes_string(x = paste0(component, "_pre"), 
+                                                     y = paste0(component, "_post"))) +
+        geom_point() +
+        geom_abline(slope = 1, intercept = 0, color = "red") +
+        labs(title = paste("Comparison of", component, "Scores"),
+             x = paste("Pre-course", component),
+             y = paste("Post-course", component))
+    
+    print(p)
+}
+
+```
+
+```{r, message=FALSE}
+# Calculate difference in scores for each component
+
+for (component in components_2022) {
+  combined_2022_individual[paste(component, "diff", sep = "_")] <- combined_2022_individual[paste(component, "post", sep = "_")] - combined_2022_individual[paste(component, "pre", sep = "_")]
+}
+
+# Check the first few rows of the updated dataframe
+head(combined_2022_individual)
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+# Calculate statistical characteristics for each difference column
+summary_diff_2022 <- summary(combined_2022_individual[, paste0(components_2022, "_diff")])
+print(summary_diff_2022)
+
+# Calculate variance for each difference column
+for(column in paste0(components_2022, "_diff")) {
+  cat("Variance of", column, ":", var(combined_2022_individual[[column]], na.rm = TRUE), "\n")
+}
+
+# Create boxplots to show the difference scores
+diff_2022 <- melt(combined_2022_individual[, paste0(components_2022, "_diff")], variable.name = "Component_Diff", value.name = "Score_Diff")
+
+ggplot(diff_2022, aes(x = Component_Diff, y = Score_Diff)) +
+  geom_boxplot(fill = "blue", alpha = 0.5) +
+  theme_minimal() +
+  xlab("Component Difference") +
+  ylab("Score Difference") +
+  geom_hline(yintercept = c(-0.5, 0.5), linetype = "dashed", color = "red")+
+  ggtitle("Boxplots of Score Differences for Each Component")
+
+df_long_2022 <- melt(combined_2022_individual, id.vars = "AnonID", 
+                     measure.vars = c("Affect_diff", "Cognitive_Competence_diff",
+                                      "Value_diff", "Difficulty_diff", 
+                                      "Interest_diff", "Effort_diff"),
+                     variable.name = "Component", value.name = "Score_Difference")
+
+# Create scatterplot
+ggplot(df_long_2022, aes(x = AnonID, y = Score_Difference)) +
+  geom_point() +
+  facet_wrap(~ Component, scales = "free") +
+  theme_minimal() +
+  xlab("Individual") +
+  ylab("Score Difference (Post - Pre)") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  ggtitle("Difference in Component Scores for Each Individual")
+```
+
+# Step 6: hypothesis test
+
+t-test
+
+```{r, message=FALSE}
+# t test
+
+# Choose a significance level
+alpha <- 0.05
+# Loop through each component and perform a paired t-test
+for (component in components_2022) {
+  pre_column_2022 <- paste(component, "pre", sep = "_")
+  post_column_2022 <- paste(component, "post", sep = "_")
+  
+  # Perform the t-test
+  t_test_result_2022 <- t.test(combined_2022_individual[[pre_column_2022]], combined_2022_individual[[post_column_2022]], paired = TRUE)
+  
+  # Print the result
+  cat("T-test result for", component, ":\n")
+  print(t_test_result_2022)
+  
+  # Decision based on p-value
+  if (t_test_result_2022$p.value <= alpha) {
+    cat("The p-value is less than or equal to the significance level. Reject the null hypothesis for", component, ".\n\n")
+  } else {
+    cat("The p-value is greater than the significance level. Do not reject the null hypothesis for", component, ".\n\n")
+  }
+
+}
+
+```
+
+some other tests:
+1. Wilcoxon Signed-Rank Test:
+```{r, message=FALSE}
+# Wilcoxon Signed-Rank Test: 
+for (component in components_2022) {
+  pre_column_2022 <- paste(component, "pre", sep = "_")
+  post_column_2022 <- paste(component, "post", sep = "_")
+  wilcoxon_result <- wilcox.test(combined_2022_individual[[pre_column_2022]],
+                                 combined_2022_individual[[post_column_2022]], 
+                                 paired = TRUE)
+  # Print the result
+  cat("Wilcoxon Signed-Rank Test result for", component, ":\n")
+  print(wilcoxon_result)
+  
+  # Decision based on p-value
+  if (wilcoxon_result$p.value <= alpha) {
+    cat("The p-value is less than or equal to the significance level. Reject the null hypothesis for", component, ".\n\n")
+  } else {
+    cat("The p-value is greater than the significance level. Do not reject the null hypothesis for", component, ".\n\n")
+  }
+
+}
+
+```
+
+2. Bootstrap Methods:
+If the confidence interval includes 0, then we do not reject the null hypothesis. This indicates that the difference in means is not statistically significant at the chosen significance level.
+If the confidence interval does not include 0, then we reject the null hypothesis. This indicates that there is a statistically significant difference in means at the chosen significance level.
+
+```{r, message=FALSE}
+# Bootstrap Methods
+for (component in components_2022) {
+  pre_column_2022 <- paste(component, "pre", sep = "_")
+  post_column_2022 <- paste(component, "post", sep = "_")
+  
+  # Define custom function to calculate difference in means
+diff_in_means <- function(data, indices) {
+    d <- data[indices,] # Select resampled rows
+    return(mean(d[[post_column_2022]]) - mean(d[[pre_column_2022]]))
+}
+  # Bootstrap
+cat("Bootstrap Methods result for", component, ":\n")
+set.seed(123) # For reproducibility
+boot_result <- boot(data = combined_2022_individual, statistic = diff_in_means,
+                    R = 10000)
+
+  # Print the result
+  print(boot_result)
+  
+  # Calculate confidence intervals using the Bootstrap Method
+boot_ci <- boot.ci(boot.out = boot_result, type = "bca")
+
+# Print the confidence interval
+print(boot_ci)
+
+# Make decision based on confidence interval
+lower_bound <- boot_ci$bca[4]
+upper_bound <- boot_ci$bca[5]
+
+if (lower_bound > 0 || upper_bound < 0) {
+    cat("The confidence interval does not include 0. Reject the null hypothesis.\n\n")
+} else {
+    cat("The confidence interval includes 0. Do not reject the null hypothesis.\n\n")
+}
+
+  
+}
+```
+
+# Step 7: Cronbach's alpha and confirmatory factor analysis
+Cronbach's Alpha is a measure of internal consistency, that is, how closely related a set of items are as a group. A "high" value of alpha (close to 1) is often used as evidence that the items measure an underlying (latent) construct.
+
+```{r, warning=FALSE}
+library(psych)
+# Pre 2022
+components <- list(
+  Affect = c("Q3", "Q4", "Q15", "Q18", "Q19", "Q28"),
+  Cognitive_Competence = c("Q5", "Q11", "Q26", "Q31", "Q32", "Q35"),
+  Value = c("Q7", "Q9", "Q10", "Q13", "Q16", "Q17", "Q21", "Q25", "Q33"),
+  Difficulty1 = c("Q6", "Q22", "Q8"), 
+  Difficulty2 = c("Q24", "Q30", "Q34", "Q36"),
+  Interest = c("Q12", "Q20", "Q23", "Q29"),
+  Effort = c("Q1", "Q2", "Q14", "Q27")
+)
+
+for(name in names(components)) {
+  alpha_score <- alpha(Pre_2022_clean[components[[name]]])
+  print(paste(name, "Cronbach's Alpha:", alpha_score$total$raw_alpha))
+}
+```
+
+
+```{r}
+# Columns contributing to "Difficulty"
+difficulty_cols <- c("Q6", "Q8", "Q22", "Q24", "Q30", "Q34", "Q36")
+
+# Subset data
+difficulty_data <- Pre_2022_clean[difficulty_cols]
+
+# Compute correlations
+correlations <- cor(difficulty_data, use = "complete.obs")
+
+
+
+# If you have corrplot library installed
+library(corrplot)
+
+corrplot(correlations, method = "color")
+
+```
+
+
+```{r}
+# Post 2022
+components <- list(
+  Affect = c("Q3", "Q4", "Q15", "Q18", "Q19", "Q28"),
+  Cognitive_Competence = c("Q5", "Q11", "Q26", "Q31", "Q32", "Q35"),
+  Value = c("Q7", "Q9", "Q10", "Q13", "Q16", "Q17", "Q21", "Q25", "Q33"),
+  Difficulty1 = c("Q6", "Q22", "Q8"), 
+  Difficulty2 = c("Q24", "Q30", "Q34", "Q36"),
+  Interest = c("Q12", "Q20", "Q23", "Q29"),
+  Effort = c("Q1", "Q2", "Q14", "Q27")
+)
+
+for(name in names(components)) {
+  alpha_score <- alpha(Post_2022_clean[components[[name]]])
+  print(paste(name, "Cronbach's Alpha:", alpha_score$total$raw_alpha))
+}
+
+```
+
+
+Confirmatory factor analysis (CFA) is a statistical technique used to verify the factor structure of a set of observed variables, and it can be used to test whether measures of a construct are consistent with a researcher's understanding of the nature of that construct (or factor).
+
+
+## Pre 
+### item(no parcel)
+```{r}
+# Specify the model with renamed latent variables
+model <- ' 
+  # measurement model
+    Latent_Affect =~ Q3 + Q4 + Q15 + Q18 + Q19 + Q28
+    Latent_Cognitive_Competence =~ Q5 + Q11 + Q26 + Q31 + Q32 + Q35
+    Latent_Value =~ Q7 + Q10 + Q13 + Q16 + Q17 + Q21 + Q25 + Q33
+    Latent_Difficulty =~ Q6 + Q8 + Q22 + Q24 + Q30 + Q34 + Q36
+    Latent_Interest =~ Q12 + Q20 + Q23 + Q29
+    Latent_Effort =~ Q1 + Q2 + Q14 + Q27
+'
+
+# Fit the model
+fit_pre <- cfa(model, data = Pre_2022_clean)
+
+# Display a summary of the model fit
+summary(fit_pre, fit.measures = TRUE, standardized = TRUE)
+
+```
+Then I want to interpret the output by looking at such indicators:
+
+    Chi-Square Test of Model Fit: If the p-value is not significant (p > .05), it suggests that the model fits the data well.
+
+    CFI (Comparative Fit Index): Values greater than 0.90 suggest a good fit.
+
+    RMSEA (Root Mean Square Error of Approximation): Values less than 0.08 suggest a good fit.
+
+    SRMR (Standardized Root Mean Square Residual): Values less than 0.08 suggest a good fit.
+
+
+```{r}
+# Get the fit measures
+fit_measures_pre <- fitMeasures(fit_pre)
+
+# Chi-Square Test of Model Fit
+chi_square_pre <- fit_measures_pre["chisq"]
+df_pre <- fit_measures_pre["df"]
+p_value_pre <- fit_measures_pre["pvalue"]
+
+cat("Chi-Square Test of Model Fit:\n")
+cat("Chi-Square =", chi_square_pre, "\n")
+cat("Degrees of Freedom =", df_pre, "\n")
+cat("P-Value =", p_value_pre, "\n")
+
+if(p_value_pre > 0.05){
+  cat("The model fits the data well based on the Chi-Square Test of Model Fit (p > 0.05).\n")
+} else {
+  cat("The model does not fit the data well based on the Chi-Square Test of Model Fit (p < 0.05).\n")
+}
+
+# CFI
+cfi_pre <- fit_measures_pre["cfi"]
+
+cat("\nCFI (Comparative Fit Index):\n")
+cat("CFI =", cfi_pre, "\n")
+
+if(cfi_pre > 0.90){
+  cat("The model fits the data well based on the CFI (CFI > 0.90).\n")
+} else {
+  cat("The model does not fit the data well based on the CFI (CFI < 0.90).\n")
+}
+
+# RMSEA
+rmsea_pre <- fit_measures_pre["rmsea"]
+
+cat("\nRMSEA (Root Mean Square Error of Approximation):\n")
+cat("RMSEA =", rmsea_pre, "\n")
+
+if(rmsea_pre < 0.08){
+  cat("The model fits the data well based on the RMSEA (RMSEA < 0.08).\n")
+} else {
+  cat("The model does not fit the data well based on the RMSEA (RMSEA > 0.08).\n")
+}
+
+# SRMR
+srmr_pre <- fit_measures_pre["srmr"]
+
+cat("\nSRMR (Standardized Root Mean Square Residual):\n")
+cat("SRMR =", srmr_pre, "\n")
+
+if(srmr_pre < 0.08){
+  cat("The model fits the data well based on the SRMR (SRMR < 0.08).\n")
+} else {
+  cat("The model does not fit the data well based on the SRMR (SRMR > 0.08).\n")
+}
+
+```
+
+```{r}
+# Visualize the model
+semPaths(fit_pre, whatLabels = "est.std", layout = "tree2", style = "lisrel",
+         width = 100, height = 100, edge.label.cex = 0.5, 
+         sizeMan = 3, sizeLat = 5) 
+
+```
+### parcels
+Then test the best model with parcels
+```{r}
+Pre_2022_clean$A1 <- rowMeans(Pre_2022_clean[c("Q3", "Q4", "Q15")], na.rm = TRUE)
+Pre_2022_clean$A2 <- rowMeans(Pre_2022_clean[c("Q18", "Q19", "Q28")], na.rm = TRUE)
+Pre_2022_clean$C1 <- rowMeans(Pre_2022_clean[c("Q5", "Q11", "Q31")], na.rm = TRUE)
+Pre_2022_clean$C2 <- rowMeans(Pre_2022_clean[c("Q26", "Q32", "Q35")], na.rm = TRUE)
+Pre_2022_clean$V1 <- rowMeans(Pre_2022_clean[c("Q7", "Q16")], na.rm = TRUE)
+Pre_2022_clean$V2 <- rowMeans(Pre_2022_clean[c("Q10", "Q13", "Q25")], na.rm = TRUE)
+Pre_2022_clean$V3 <- rowMeans(Pre_2022_clean[c("Q17", "Q21", "Q33")], na.rm = TRUE)
+Pre_2022_clean$D1 <- rowMeans(Pre_2022_clean[c("Q6", "Q8", "Q24")], na.rm = TRUE)
+Pre_2022_clean$D2 <- rowMeans(Pre_2022_clean[c("Q22", "Q30", "Q34","Q36")], na.rm = TRUE)
+Pre_2022_clean$I1 <- rowMeans(Pre_2022_clean[c("Q12", "Q20")], na.rm = TRUE)
+Pre_2022_clean$I2 <- rowMeans(Pre_2022_clean[c("Q23", "Q29")], na.rm = TRUE)
+Pre_2022_clean$E1 <- rowMeans(Pre_2022_clean[c("Q1", "Q27")], na.rm = TRUE)
+Pre_2022_clean$E2 <- rowMeans(Pre_2022_clean[c("Q2", "Q14")], na.rm = TRUE)
+
+# Melt the data into long format for easier plotting
+Pre_2022_AC <- melt(Pre_2022_clean[, c("A1", "A2", 
+                                           "C1", "C2")], id.vars = NULL,
+                      value.name = "Score")
+
+# Melt the data into long format for easier plotting
+Pre_2022_AC <- melt(Pre_2022_clean[, c("A1", "A2", "C1", "C2")], id.vars = NULL, variable.name = "Component", 
+                      value.name = "Score")
+
+# Create a histogram
+ggplot(Pre_2022_AC, aes(x = Score)) +
+  geom_histogram(binwidth = 0.5, fill = "blue", alpha = 0.5) +
+  facet_wrap(~Component, scales = "free") +
+  theme_minimal() +
+  xlab("Score") +
+  ylab("Count") +
+  ggtitle("Distribution of Component Scores of Pre 2022")
+
+data_2022 <- data.frame(
+  A1 = Pre_2022_clean$A1,
+  A2 = Pre_2022_clean$A2,
+  C1 = Pre_2022_clean$C1,
+  C2 = Pre_2022_clean$C2
+)
+
+# Calculate the correlation matrix
+correlation_matrix <- cor(data_2022)
+
+# Print the correlation matrix
+print(correlation_matrix)
+
+```
+
+
+```{r}
+# Specify the model with renamed latent variables
+model <- ' 
+  # measurement model
+    Latent_Affect =~ A1 + A2
+    Latent_Cognitive_Competence =~ C1 + C2
+    Latent_Value =~ V1 + V2 + V3
+    Latent_Difficulty =~ D1 + D2
+    Latent_Interest =~ I1 +I2
+    Latent_Effort =~ E1 + E2
+'
+
+# Fit the model
+fit_pre <- cfa(model, data = Pre_2022_clean)
+
+# Display a summary of the model fit
+summary(fit_pre, fit.measures = TRUE, standardized = TRUE)
+
+
+
+# Get the fit measures
+fit_measures_pre <- fitMeasures(fit_pre)
+
+# Chi-Square Test of Model Fit
+chi_square_pre <- fit_measures_pre["chisq"]
+df_pre <- fit_measures_pre["df"]
+p_value_pre <- fit_measures_pre["pvalue"]
+
+cat("Chi-Square Test of Model Fit:\n")
+cat("Chi-Square =", chi_square_pre, "\n")
+cat("Degrees of Freedom =", df_pre, "\n")
+cat("P-Value =", p_value_pre, "\n")
+
+if(p_value_pre > 0.05){
+  cat("The model fits the data well based on the Chi-Square Test of Model Fit (p > 0.05).\n")
+} else {
+  cat("The model does not fit the data well based on the Chi-Square Test of Model Fit (p < 0.05).\n")
+}
+
+# CFI
+cfi_pre <- fit_measures_pre["cfi"]
+
+cat("\nCFI (Comparative Fit Index):\n")
+cat("CFI =", cfi_pre, "\n")
+
+if(cfi_pre > 0.90){
+  cat("The model fits the data well based on the CFI (CFI > 0.90).\n")
+} else {
+  cat("The model does not fit the data well based on the CFI (CFI < 0.90).\n")
+}
+
+# RMSEA
+rmsea_pre <- fit_measures_pre["rmsea"]
+
+cat("\nRMSEA (Root Mean Square Error of Approximation):\n")
+cat("RMSEA =", rmsea_pre, "\n")
+
+if(rmsea_pre < 0.08){
+  cat("The model fits the data well based on the RMSEA (RMSEA < 0.08).\n")
+} else {
+  cat("The model does not fit the data well based on the RMSEA (RMSEA > 0.08).\n")
+}
+
+# SRMR
+srmr_pre <- fit_measures_pre["srmr"]
+
+cat("\nSRMR (Standardized Root Mean Square Residual):\n")
+cat("SRMR =", srmr_pre, "\n")
+
+if(srmr_pre < 0.08){
+  cat("The model fits the data well based on the SRMR (SRMR < 0.08).\n")
+} else {
+  cat("The model does not fit the data well based on the SRMR (SRMR > 0.08).\n")
+}
+
+
+# Visualize the model
+semPaths(fit_pre, whatLabels = "est.std", layout = "tree2", style = "lisrel",
+         width = 100, height = 100, edge.label.cex = 0.8, 
+         sizeMan = 5, sizeLat = 8) 
+
+```
+
+### Combine A and C
+Then we try to combine the latent variables Affect and Cognitive_Competence
+```{r}
+# Specify the model with renamed latent variables
+model <- ' 
+  # measurement model
+    Latent_AC =~ A1 + A2 + C1 + C2
+    Latent_Value =~ V1 + V2 + V3
+    Latent_Difficulty =~ D1 + D2
+    Latent_Interest =~ I1 +I2
+    Latent_Effort =~ E1 + E2
+'
+
+# Fit the model
+fit_pre <- cfa(model, data = Pre_2022_clean)
+
+# Display a summary of the model fit
+summary(fit_pre, fit.measures = TRUE, standardized = TRUE)
+
+
+
+# Get the fit measures
+fit_measures_pre <- fitMeasures(fit_pre)
+
+# Chi-Square Test of Model Fit
+chi_square_pre <- fit_measures_pre["chisq"]
+df_pre <- fit_measures_pre["df"]
+p_value_pre <- fit_measures_pre["pvalue"]
+
+cat("Chi-Square Test of Model Fit:\n")
+cat("Chi-Square =", chi_square_pre, "\n")
+cat("Degrees of Freedom =", df_pre, "\n")
+cat("P-Value =", p_value_pre, "\n")
+
+if(p_value_pre > 0.05){
+  cat("The model fits the data well based on the Chi-Square Test of Model Fit (p > 0.05).\n")
+} else {
+  cat("The model does not fit the data well based on the Chi-Square Test of Model Fit (p < 0.05).\n")
+}
+
+# CFI
+cfi_pre <- fit_measures_pre["cfi"]
+
+cat("\nCFI (Comparative Fit Index):\n")
+cat("CFI =", cfi_pre, "\n")
+
+if(cfi_pre > 0.90){
+  cat("The model fits the data well based on the CFI (CFI > 0.90).\n")
+} else {
+  cat("The model does not fit the data well based on the CFI (CFI < 0.90).\n")
+}
+
+# RMSEA
+rmsea_pre <- fit_measures_pre["rmsea"]
+
+cat("\nRMSEA (Root Mean Square Error of Approximation):\n")
+cat("RMSEA =", rmsea_pre, "\n")
+
+if(rmsea_pre < 0.08){
+  cat("The model fits the data well based on the RMSEA (RMSEA < 0.08).\n")
+} else {
+  cat("The model does not fit the data well based on the RMSEA (RMSEA > 0.08).\n")
+}
+
+# SRMR
+srmr_pre <- fit_measures_pre["srmr"]
+
+cat("\nSRMR (Standardized Root Mean Square Residual):\n")
+cat("SRMR =", srmr_pre, "\n")
+
+if(srmr_pre < 0.08){
+  cat("The model fits the data well based on the SRMR (SRMR < 0.08).\n")
+} else {
+  cat("The model does not fit the data well based on the SRMR (SRMR > 0.08).\n")
+}
+
+
+# Visualize the model
+semPaths(fit_pre, whatLabels = "est.std", layout = "tree2", style = "lisrel",
+         width = 100, height = 100, edge.label.cex = 0.8, 
+         sizeMan = 5, sizeLat = 8) 
+
+```
+```{r}
+# Columns contributing to "Difficulty"
+AC_cols <- c("Q3", "Q4", "Q15", "Q18", "Q19", "Q28", "Q5", "Q11", "Q26", "Q31", "Q32", "Q35")
+
+# Subset data
+AC_data <- Pre_2022_clean[AC_cols]
+
+# Compute correlations
+correlations <- cor(AC_data, use = "complete.obs")
+
+
+# If you have corrplot library installed
+library(corrplot)
+
+corrplot(correlations, method = "color")
+
+```
+
+
+## Post
+### item(no parcel)
+```{r}
+# 2022 post
+# Specify the model with renamed latent variables
+model <- ' 
+  # measurement model
+    Latent_Affect =~ Q3 + Q4 + Q15 + Q18 + Q19 + Q28
+    Latent_Cognitive_Competence =~ Q5 + Q11 + Q26 + Q31 + Q32 + Q35
+    Latent_Value =~ Q7 + Q10 + Q13 + Q16 + Q17 + Q21 + Q25 + Q33
+    Latent_Difficulty =~ Q6 + Q8 + Q22 + Q24 + Q30 + Q34 + Q36
+    Latent_Interest =~ Q12 + Q20 + Q23 + Q29
+    Latent_Effort =~ Q1 + Q2 + Q14 + Q27
+'
+# Fit the model
+fit_post <- cfa(model, data = Post_2022_clean)
+
+# Display a summary of the model fit
+summary(fit_post, fit.measures = TRUE, standardized = TRUE)
+
+```
+
+```{r}
+# Get the fit measures
+fit_measures_post <- fitMeasures(fit_post)
+
+# Chi-Square Test of Model Fit
+chi_square_post <- fit_measures_post["chisq"]
+df_post <- fit_measures_post["df"]
+p_value_post <- fit_measures_post["pvalue"]
+
+cat("Chi-Square Test of Model Fit:\n")
+cat("Chi-Square =", chi_square_post, "\n")
+cat("Degrees of Freedom =", df_post, "\n")
+cat("P-Value =", p_value_post, "\n")
+
+if(p_value_post > 0.05){
+  cat("The model fits the data well based on the Chi-Square Test of Model Fit (p > 0.05).\n")
+} else {
+  cat("The model does not fit the data well based on the Chi-Square Test of Model Fit (p < 0.05).\n")
+}
+
+# CFI
+cfi_post <- fit_measures_post["cfi"]
+
+cat("\nCFI (Comparative Fit Index):\n")
+cat("CFI =", cfi_post, "\n")
+
+if(cfi_post > 0.90){
+  cat("The model fits the data well based on the CFI (CFI > 0.90).\n")
+} else {
+  cat("The model does not fit the data well based on the CFI (CFI < 0.90).\n")
+}
+
+# RMSEA
+rmsea_post <- fit_measures_post["rmsea"]
+
+cat("\nRMSEA (Root Mean Square Error of Approximation):\n")
+cat("RMSEA =", rmsea_post, "\n")
+
+if(rmsea_post < 0.08){
+  cat("The model fits the data well based on the RMSEA (RMSEA < 0.08).\n")
+} else {
+  cat("The model does not fit the data well based on the RMSEA (RMSEA > 0.08).\n")
+}
+
+# SRMR
+srmr_post <- fit_measures_post["srmr"]
+
+cat("\nSRMR (Standardized Root Mean Square Residual):\n")
+cat("SRMR =", srmr_post, "\n")
+
+if(srmr_post < 0.08){
+  cat("The model fits the data well based on the SRMR (SRMR < 0.08).\n")
+} else {
+  cat("The model does not fit the data well based on the SRMR (SRMR > 0.08).\n")
+}
+
+```
+
+```{r}
+# Visualize the model
+semPaths(fit_post, whatLabels = "est.std", layout = "tree2", style = "lisrel",
+         width = 100, height = 100, edge.label.cex = 0.5, 
+         sizeMan = 3, sizeLat = 5) 
+
+```
+
+### parcels
+```{r}
+Post_2022_clean$A1 <- rowMeans(Post_2022_clean[c("Q3", "Q4", "Q15")], na.rm = TRUE)
+Post_2022_clean$A2 <- rowMeans(Post_2022_clean[c("Q18", "Q19", "Q28")], na.rm = TRUE)
+Post_2022_clean$C1 <- rowMeans(Post_2022_clean[c("Q5", "Q11", "Q31")], na.rm = TRUE)
+Post_2022_clean$C2 <- rowMeans(Post_2022_clean[c("Q26", "Q32", "Q35")], na.rm = TRUE)
+Post_2022_clean$V1 <- rowMeans(Post_2022_clean[c("Q7", "Q16")], na.rm = TRUE)
+Post_2022_clean$V2 <- rowMeans(Post_2022_clean[c("Q10", "Q13", "Q25")], na.rm = TRUE)
+Post_2022_clean$V3 <- rowMeans(Post_2022_clean[c("Q17", "Q21", "Q33")], na.rm = TRUE)
+Post_2022_clean$D1 <- rowMeans(Post_2022_clean[c("Q6", "Q8", "Q24")], na.rm = TRUE)
+Post_2022_clean$D2 <- rowMeans(Post_2022_clean[c("Q22", "Q30", "Q34","Q36")], na.rm = TRUE)
+Post_2022_clean$I1 <- rowMeans(Post_2022_clean[c("Q12", "Q20")], na.rm = TRUE)
+Post_2022_clean$I2 <- rowMeans(Post_2022_clean[c("Q23", "Q29")], na.rm = TRUE)
+Post_2022_clean$E1 <- rowMeans(Post_2022_clean[c("Q1", "Q27")], na.rm = TRUE)
+Post_2022_clean$E2 <- rowMeans(Post_2022_clean[c("Q2", "Q14")], na.rm = TRUE)
+
+
+# Melt the data into long format for easier plotting
+Post_2022_AC <- melt(Post_2022_clean[, c("A1", "A2", "C1", "C2")], id.vars = NULL, variable.name = "Component", 
+                      value.name = "Score")
+
+# Create a histogram
+ggplot(Post_2022_AC, aes(x = Score)) +
+  geom_histogram(binwidth = 0.5, fill = "blue", alpha = 0.5) +
+  facet_wrap(~Component, scales = "free") +
+  theme_minimal() +
+  xlab("Score") +
+  ylab("Count") +
+  ggtitle("Distribution of Component Scores of Pre 2022")
+
+data_2022 <- data.frame(
+  A1 = Post_2022_clean$A1,
+  A2 = Post_2022_clean$A2,
+  C1 = Post_2022_clean$C1,
+  C2 = Post_2022_clean$C2
+)
+
+# Calculate the correlation matrix
+correlation_matrix <- cor(data_2022)
+
+# Print the correlation matrix
+print(correlation_matrix)
+
+```
+
+
+```{r}
+# Specify the model with renamed latent variables
+model <- ' 
+  # measurement model
+    Latent_Affect =~ A1 + A2
+    Latent_Cognitive_Competence =~ C1 + C2
+    Latent_Value =~ V1 + V2 + V3
+    Latent_Difficulty =~ D1 + D2
+    Latent_Interest =~ I1 +I2
+    Latent_Effort =~ E1 + E2
+'
+
+# Fit the model
+fit_post <- cfa(model, data = Post_2022_clean)
+
+# Display a summary of the model fit
+summary(fit_post, fit.measures = TRUE, standardized = TRUE)
+
+
+
+# Get the fit measures
+fit_measures_post <- fitMeasures(fit_post)
+
+# Chi-Square Test of Model Fit
+chi_square_post <- fit_measures_post["chisq"]
+df_post <- fit_measures_post["df"]
+p_value_post <- fit_measures_post["pvalue"]
+
+cat("Chi-Square Test of Model Fit:\n")
+cat("Chi-Square =", chi_square_post, "\n")
+cat("Degrees of Freedom =", df_post, "\n")
+cat("P-Value =", p_value_post, "\n")
+
+if(p_value_post > 0.05){
+  cat("The model fits the data well based on the Chi-Square Test of Model Fit (p > 0.05).\n")
+} else {
+  cat("The model does not fit the data well based on the Chi-Square Test of Model Fit (p < 0.05).\n")
+}
+
+# CFI
+cfi_post <- fit_measures_post["cfi"]
+
+cat("\nCFI (Comparative Fit Index):\n")
+cat("CFI =", cfi_post, "\n")
+
+if(cfi_post > 0.90){
+  cat("The model fits the data well based on the CFI (CFI > 0.90).\n")
+} else {
+  cat("The model does not fit the data well based on the CFI (CFI < 0.90).\n")
+}
+
+# RMSEA
+rmsea_post <- fit_measures_post["rmsea"]
+
+cat("\nRMSEA (Root Mean Square Error of Approximation):\n")
+cat("RMSEA =", rmsea_post, "\n")
+
+if(rmsea_post < 0.08){
+  cat("The model fits the data well based on the RMSEA (RMSEA < 0.08).\n")
+} else {
+  cat("The model does not fit the data well based on the RMSEA (RMSEA > 0.08).\n")
+}
+
+# SRMR
+srmr_post <- fit_measures_post["srmr"]
+
+cat("\nSRMR (Standardized Root Mean Square Residual):\n")
+cat("SRMR =", srmr_post, "\n")
+
+if(srmr_post < 0.08){
+  cat("The model fits the data well based on the SRMR (SRMR < 0.08).\n")
+} else {
+  cat("The model does not fit the data well based on the SRMR (SRMR > 0.08).\n")
+}
+
+
+# Visualize the model
+semPaths(fit_post, whatLabels = "est.std", layout = "tree2", style = "lisrel",
+         width = 100, height = 100, edge.label.cex = 0.8, 
+         sizeMan = 5, sizeLat = 8) 
+
+```
+
+### Combine A and C
+Then we try to combine the latent variables Affect and Cognitive_Competence
+```{r}
+# Specify the model with renamed latent variables
+model <- ' 
+  # measurement model
+    Latent_AC =~ A1 + A2 +C1 + C2
+    Latent_Value =~ V1 + V2 + V3
+    Latent_Difficulty =~ D1 + D2
+    Latent_Interest =~ I1 +I2
+    Latent_Effort =~ E1 + E2
+'
+
+# Fit the model
+fit_post <- cfa(model, data = Post_2022_clean)
+
+# Display a summary of the model fit
+summary(fit_post, fit.measures = TRUE, standardized = TRUE)
+
+
+
+# Get the fit measures
+fit_measures_post <- fitMeasures(fit_post)
+
+# Chi-Square Test of Model Fit
+chi_square_post <- fit_measures_post["chisq"]
+df_post <- fit_measures_post["df"]
+p_value_post <- fit_measures_post["pvalue"]
+
+cat("Chi-Square Test of Model Fit:\n")
+cat("Chi-Square =", chi_square_post, "\n")
+cat("Degrees of Freedom =", df_post, "\n")
+cat("P-Value =", p_value_post, "\n")
+
+if(p_value_post > 0.05){
+  cat("The model fits the data well based on the Chi-Square Test of Model Fit (p > 0.05).\n")
+} else {
+  cat("The model does not fit the data well based on the Chi-Square Test of Model Fit (p < 0.05).\n")
+}
+
+# CFI
+cfi_post <- fit_measures_post["cfi"]
+
+cat("\nCFI (Comparative Fit Index):\n")
+cat("CFI =", cfi_post, "\n")
+
+if(cfi_post > 0.90){
+  cat("The model fits the data well based on the CFI (CFI > 0.90).\n")
+} else {
+  cat("The model does not fit the data well based on the CFI (CFI < 0.90).\n")
+}
+
+# RMSEA
+rmsea_post <- fit_measures_post["rmsea"]
+
+cat("\nRMSEA (Root Mean Square Error of Approximation):\n")
+cat("RMSEA =", rmsea_post, "\n")
+
+if(rmsea_post < 0.08){
+  cat("The model fits the data well based on the RMSEA (RMSEA < 0.08).\n")
+} else {
+  cat("The model does not fit the data well based on the RMSEA (RMSEA > 0.08).\n")
+}
+
+# SRMR
+srmr_post <- fit_measures_post["srmr"]
+
+cat("\nSRMR (Standardized Root Mean Square Residual):\n")
+cat("SRMR =", srmr_post, "\n")
+
+if(srmr_post < 0.08){
+  cat("The model fits the data well based on the SRMR (SRMR < 0.08).\n")
+} else {
+  cat("The model does not fit the data well based on the SRMR (SRMR > 0.08).\n")
+}
+
+
+# Visualize the model
+semPaths(fit_post, whatLabels = "est.std", layout = "tree2", style = "lisrel",
+         width = 100, height = 100, edge.label.cex = 0.8, 
+         sizeMan = 5, sizeLat = 8) 
+
+```
+
+
+# Step 8: Combine with Demo
+```{r}
+# Merge combined_2022_indivigual and Demo_2022 based on AnonID
+final_df <- merge(combined_2022_individual, Demo_2022, by = "AnonID")
+
+# Print the first few rows of the final dataframe
+head(final_df)
+
+```
+
+```{r}
+# Count the number of different responses in the 'Domicile on Programme Entry' column
+table(final_df$`Domicile on Programme Entry`)
+
+# Count the number of different responses in the 'Gender' column
+table(final_df$`Gender`)
+
+# Count the number of different responses in the 'Programme Statue Description' column
+table(final_df$`Programme Statue Description`)
+
+# Count the number of different responses in the 'Programme Of Study Sought Title' column
+table(final_df$`Programme Of Study Sought Title`)
+
+# Count the number of different responses in the 'Year Of Programme' column
+table(final_df$`Year Of Programme`)
+
+# Count the number of different responses in the 'Year Of Attendance' column
+table(final_df$`Year Of Attendance`)
+
+# Count the number of different responses in the 'Manual Entry' column
+table(final_df$`Manual Entry`)
+
+```
+
+
+
+
+## Gender
+```{r}
+# Separate the data into two tables
+final_df_female <- subset(final_df, Gender == 'F')
+final_df_male <- subset(final_df, Gender == 'M')
+
+# Get the column names for the pre and post components
+pre_columns <- c("Affect_pre", "Cognitive_Competence_pre", "Value_pre", "Difficulty_pre", "Interest_pre", "Effort_pre")
+post_columns <- c("Affect_post", "Cognitive_Competence_post", "Value_post", "Difficulty_post", "Interest_post", "Effort_post")
+
+# Calculate the average values for pre components
+female_pre_avg <- colMeans(final_df_female[,pre_columns], na.rm = TRUE)
+male_pre_avg <- colMeans(final_df_male[,pre_columns], na.rm = TRUE)
+
+# Calculate the average values for post components
+female_post_avg <- colMeans(final_df_female[,post_columns], na.rm = TRUE)
+male_post_avg <- colMeans(final_df_male[,post_columns], na.rm = TRUE)
+
+# Print the results
+print("Female average values for pre components:")
+print(female_pre_avg)
+
+print("Male average values for pre components:")
+print(male_pre_avg)
+
+print("Female average values for post components:")
+print(female_post_avg)
+
+print("Male average values for post components:")
+print(male_post_avg)
+
+```
+
+```{r}
+# Load the necessary libraries
+library(ggplot2)
+library(reshape2)
+
+# Reshape the data
+female_long <- melt(final_df_female[,c(pre_columns, post_columns)], id.vars = NULL)
+male_long <- melt(final_df_male[,c(pre_columns, post_columns)], id.vars = NULL)
+
+# Add a column to indicate pre or post
+female_long$Time <- ifelse(grepl("pre", female_long$variable), "Pre", "Post")
+male_long$Time <- ifelse(grepl("pre", male_long$variable), "Pre", "Post")
+
+# Remove "pre" and "post" from variable names
+female_long$variable <- gsub("_pre|_post", "", female_long$variable)
+male_long$variable <- gsub("_pre|_post", "", male_long$variable)
+
+# Specify the order of components
+component_order <- c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")
+
+# Convert the variable into a factor with specified level order
+female_long$variable <- factor(female_long$variable, levels = component_order)
+male_long$variable <- factor(male_long$variable, levels = component_order)
+
+
+# Draw bar plots
+ggplot(female_long, aes(x = variable, y = value, fill = Time)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.6) +
+  theme_minimal() +
+  labs(title = "Comparison of pre and post scores for female", x = "Components", y = "Scores")
+
+ggplot(male_long, aes(x = variable, y = value, fill = Time)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.6) +
+  theme_minimal() +
+  labs(title = "Comparison of pre and post scores for male", x = "Components", y = "Scores")
+
+```
+
+```{r}
+# Calculate mean differences
+female_diff <- female_post_avg - female_pre_avg
+male_diff <- male_post_avg - male_pre_avg
+
+cat("female mean difference =", female_diff, "\n")
+cat("male mean difference =", male_diff, "\n")
+
+# Remove "post" from component names
+names(female_diff) <- gsub("_post", "", names(female_diff))
+names(male_diff) <- gsub("_post", "", names(male_diff))
+
+# Convert to data frame for plotting
+female_diff_df <- data.frame(Component = names(female_diff), MeanDifference = female_diff, Gender = "Female")
+male_diff_df <- data.frame(Component = names(male_diff), MeanDifference = male_diff, Gender = "Male")
+
+# Combine the data frames
+combined_diff_df <- rbind(female_diff_df, male_diff_df)
+
+# Define the desired order
+component_order <- unique(combined_diff_df$Component)
+
+# Convert the factor to an ordered factor with the specified levels
+combined_diff_df$Component <- factor(combined_diff_df$Component, levels = component_order)
+
+
+# Plot the data
+ggplot(combined_diff_df, aes(x = Component, y = MeanDifference, fill = Gender)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.6) +
+  labs(title = "Mean Difference of Pre and Post Scores for Each Component", 
+       x = "Component", 
+       y = "Mean Difference", 
+       fill = "Gender") +
+  theme_minimal()
+
+```
+```{r}
+# List of components
+components_final <- c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")
+
+# Choose a significance level
+alpha <- 0.05
+
+# Loop through each component and perform an independent t-test
+for (component in components_final) {
+  
+  # Perform the t-test
+  t_test_result <- t.test(final_df[final_df$Gender == "F", paste(component, "post", sep = "_")], 
+                          final_df[final_df$Gender == "M", paste(component, "post", sep = "_")],
+                          var.equal = TRUE)
+  
+  # Print the result
+  cat("T-test result for", component, ":\n")
+  print(t_test_result)
+  
+  # Decision based on p-value
+  if (t_test_result$p.value <= alpha) {
+    cat("The p-value is less than or equal to the significance level. Reject the null hypothesis that the mean difference of", component, "are equal for males and females.\n\n")
+  } else {
+    cat("The p-value is greater than the significance level. Do not reject the null hypothesis that the mean difference of", component, "are equal for males and females.\n\n")
+  }
+}
+
+
+```
+
+
+```{r}
+# Loop over each component and conduct an ANOVA
+for (component in components_final) {
+  
+  # Create the formula
+  formula_str <- paste(component, "diff ~ Gender", sep = "_")
+  formula_obj <- as.formula(formula_str)
+
+  # Perform the ANOVA
+  anova_result <- aov(formula_obj, data = final_df)
+  
+  # Print the result
+  cat("ANOVA result for", component, "difference:\n")
+  print(summary(anova_result))
+  
+  # Decision based on p-value
+  if (summary(anova_result)[[1]][["Pr(>F)"]][1] <= alpha) {
+    cat("The p-value is less than or equal to the significance level. Reject the null hypothesis that the mean differences in", component, "are equal for all levels of Gender.\n\n")
+  } else {
+    cat("The p-value is greater than the significance level. Do not reject the null hypothesis that the mean differences in", component, "are equal for all levels of Gender.\n\n")
+  }
+}
+
+```
+
+```{r}
+# Melt the data to long format for easier use in lm() and aov()
+library(reshape2)
+final_df_long <- melt(final_df, id.vars = c("AnonID", "Gender"), measure.vars = paste0(components_final, "_diff"), variable.name = "Component", value.name = "diff")
+
+# Run the linear model
+fit1 <- lm(diff ~ Gender + Component + Gender:Component, data = final_df_long)
+
+# Run the ANOVA
+anova_result1 <- aov(fit1)
+summary(fit1)
+# Print the result
+print(summary(anova_result1))
+```
+
+```{r}
+# Run the linear model
+fit2 <- lm(diff ~ -1+ Gender + Component , data = final_df_long)
+
+# Run the ANOVA
+anova_result2 <- aov(fit2)
+summary(fit2)
+# Print the result
+print(summary(anova_result2))
+
+```
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+# Add the residuals to the long-form data frame
+final_df_long$residuals <- residuals(fit2)
+
+# Split the data by gender
+female_data <- final_df_long[final_df_long$Gender == "F", ]
+male_data <- final_df_long[final_df_long$Gender == "M", ]
+
+# Plot the female data
+female_plot <- ggplot(female_data, aes(x = Component, y = residuals)) +
+  geom_violin() +
+  labs(title = "Female") +
+  theme_minimal()
+
+# Plot the male data
+male_plot <- ggplot(male_data, aes(x = Component, y = residuals)) +
+  geom_violin() +
+  labs(title = "Male") +
+  theme_minimal()
+
+# Combine the plots
+grid.arrange(female_plot, male_plot, ncol = 2)
+
+```
+
+
+## Domicile
+```{r}
+# Separate the data into two tables
+final_df_chi <- subset(final_df, `Domicile on Programme Entry` == 'China')
+final_df_eng <- subset(final_df, `Domicile on Programme Entry` == 'England')
+final_df_scot <- subset(final_df, `Domicile on Programme Entry` == 'Scotland')
+
+# Get the column names for the pre and post components
+pre_columns <- c("Affect_pre", "Cognitive_Competence_pre", "Value_pre", "Difficulty_pre", "Interest_pre", "Effort_pre")
+post_columns <- c("Affect_post", "Cognitive_Competence_post", "Value_post", "Difficulty_post", "Interest_post", "Effort_post")
+
+# Calculate the average values for pre components
+chi_pre_avg <- colMeans(final_df_chi[,pre_columns], na.rm = TRUE)
+eng_pre_avg <- colMeans(final_df_eng[,pre_columns], na.rm = TRUE)
+scot_pre_avg <- colMeans(final_df_scot[,pre_columns], na.rm = TRUE)
+
+# Calculate the average values for post components
+chi_post_avg <- colMeans(final_df_chi[,post_columns], na.rm = TRUE)
+eng_post_avg <- colMeans(final_df_eng[,post_columns], na.rm = TRUE)
+scot_post_avg <- colMeans(final_df_scot[,post_columns], na.rm = TRUE)
+
+# Print the results
+print("China average values for pre components:")
+print(chi_pre_avg)
+
+print("England average values for pre components:")
+print(eng_pre_avg)
+
+print("Scotland average values for pre components:")
+print(scot_pre_avg)
+
+print("China average values for post components:")
+print(chi_post_avg)
+
+print("England average values for post components:")
+print(eng_post_avg)
+
+print("Scotland average values for post components:")
+print(scot_post_avg)
+
+```
+
+```{r}
+# Load the necessary libraries
+library(ggplot2)
+library(reshape2)
+
+# Reshape the data
+chi_long <- melt(final_df_chi[,c(pre_columns, post_columns)], id.vars = NULL)
+eng_long <- melt(final_df_eng[,c(pre_columns, post_columns)], id.vars = NULL)
+scot_long <- melt(final_df_scot[,c(pre_columns, post_columns)], id.vars = NULL)
+
+# Add a column to indicate pre or post
+chi_long$Time <- ifelse(grepl("pre", chi_long$variable), "Pre", "Post")
+eng_long$Time <- ifelse(grepl("pre", eng_long$variable), "Pre", "Post")
+scot_long$Time <- ifelse(grepl("pre", scot_long$variable), "Pre", "Post")
+
+# Remove "pre" and "post" from variable names
+chi_long$variable <- gsub("_pre|_post", "", chi_long$variable)
+eng_long$variable <- gsub("_pre|_post", "", eng_long$variable)
+scot_long$variable <- gsub("_pre|_post", "", scot_long$variable)
+
+# Specify the order of components
+component_order <- c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")
+
+# Convert the variable into a factor with specified level order
+chi_long$variable <- factor(chi_long$variable, levels = component_order)
+eng_long$variable <- factor(eng_long$variable, levels = component_order)
+scot_long$variable <- factor(scot_long$variable, levels = component_order)
+
+# Draw bar plots
+ggplot(chi_long, aes(x = variable, y = value, fill = Time)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.6) +
+  theme_minimal() +
+  labs(title = "Comparison of pre and post scores for China", x = "Components", y = "Scores")
+
+ggplot(eng_long, aes(x = variable, y = value, fill = Time)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.6) +
+  theme_minimal() +
+  labs(title = "Comparison of pre and post scores for England", x = "Components", y = "Scores")
+
+ggplot(scot_long, aes(x = variable, y = value, fill = Time)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.6) +
+  theme_minimal() +
+  labs(title = "Comparison of pre and post scores for Scotland", x = "Components", y = "Scores")
+
+```
+
+```{r}
+# Calculate mean differences
+chi_diff <- chi_post_avg - chi_pre_avg
+eng_diff <- eng_post_avg - eng_pre_avg
+scot_diff <- scot_post_avg - scot_pre_avg
+
+cat("China mean difference =", chi_diff, "\n")
+cat("England mean difference =", eng_diff, "\n")
+cat("Scotland mean difference =", scot_diff, "\n")
+
+# Remove "post" from component names
+names(chi_diff) <- gsub("_post", "", names(chi_diff))
+names(eng_diff) <- gsub("_post", "", names(eng_diff))
+names(scot_diff) <- gsub("_post", "", names(scot_diff))
+
+# Convert to data frame for plotting
+chi_diff_df <- data.frame(Component = names(chi_diff), MeanDifference = chi_diff, `Domicile on Programme Entry` = "China")
+eng_diff_df <- data.frame(Component = names(eng_diff), MeanDifference = eng_diff, `Domicile on Programme Entry` = "England")
+scot_diff_df <- data.frame(Component = names(scot_diff), MeanDifference = scot_diff, `Domicile on Programme Entry` = "Scotland")
+
+# Combine the data frames
+combined_diff_df <- rbind(chi_diff_df, eng_diff_df, scot_diff_df)
+
+# Define the desired order
+component_order <- unique(combined_diff_df$Component)
+
+# Convert the factor to an ordered factor with the specified levels
+combined_diff_df$Component <- factor(combined_diff_df$Component, levels = component_order)
+
+# Plot the data
+ggplot(combined_diff_df, aes(x = Component, y = MeanDifference, fill = Domicile.on.Programme.Entry)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.6) +
+  labs(title = "Mean Difference of Pre and Post Scores for Each Component", 
+       x = "Component", 
+       y = "Mean Difference", 
+       fill = "Domicile") +
+  theme_minimal()
+```
+
+```{r}
+# Filter the data to include only the three countries
+final_df_filtered <- final_df[final_df$`Domicile on Programme Entry` %in% c("China", "England", "Scotland"), ]
+
+# Choose a significance level
+alpha <- 0.05
+
+# Loop over each component and conduct an ANOVA
+for (component in components_final) {
+  
+  # Create the formula
+  formula_str <- paste(component, "diff ~ `Domicile on Programme Entry`", sep = "_")
+  formula_obj <- as.formula(formula_str)
+
+  # Perform the ANOVA
+  anova_result <- aov(formula_obj, data = final_df_filtered)
+  
+  # Print the result
+  cat("ANOVA result for", component, "difference:\n")
+  print(summary(anova_result))
+  
+  # Decision based on p-value
+  if (summary(anova_result)[[1]][["Pr(>F)"]][1] <= alpha) {
+    cat("The p-value is less than or equal to the significance level. Reject the null hypothesis that the mean differences in", component, "are equal for all levels of Domicile on Programme Entry.\n\n")
+  } else {
+    cat("The p-value is greater than the significance level. Do not reject the null hypothesis that the mean differences in", component, "are equal for all levels of Domicile on Programme Entry.\n\n")
+  }
+}
+
+```
+
+```{r}
+# Melt the data to long format for easier use in lm() and aov()
+library(reshape2)
+final_df_filtered_long <- melt(final_df_filtered, id.vars = c("AnonID", "Domicile on Programme Entry"), 
+                               measure.vars = paste0(components_final, "_diff"), 
+                               variable.name = "Component", 
+                               value.name = "diff")
+
+# Run the linear model
+fit1 <- lm(diff ~ `Domicile on Programme Entry` + Component + `Domicile on Programme Entry`:Component, data = final_df_filtered_long)
+
+# Run the ANOVA
+anova_result <- aov(fit1)
+summary(fit1)
+# Print the result
+print(summary(anova_result))
+
+```
+
+```{r}
+# Run the linear model
+fit2 <- lm(diff ~ `Domicile on Programme Entry` + Component , data = final_df_filtered_long)
+
+# Run the ANOVA
+anova_result <- aov(fit2)
+summary(fit2)
+# Print the result
+print(summary(anova_result))
+```
+
+
+
+
+
+
