@@ -1738,6 +1738,9 @@ grid.arrange(female_plot, male_plot, ncol = 2)
 
 ```
 
+```{r}
+View(final_df_long %>% filter(abs(residuals)>2))
+```
 
 ## Domicile
 ```{r}
