@@ -1,0 +1,330 @@
+RowID,AnonID,Domicile on Programme Entry,Gender,Programme Status Description,Programme Of Study Sought Code,Programme Of Study Sought Title,Year Of Programme,Year Of Attendance,Manual Entry
+1,FRN,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,5,0
+2,LAC,Scotland,M,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,3,0
+3,BHZ,England,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,3,0
+4,BSY,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,3,0
+5,NDS,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,4,0
+6,JED,Scotland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,4,0
+7,CAU,Hungary,M,Fully matriculated,UTMATHB,Mathematics,2,3,0
+8,NML,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+9,PCH,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,3,0
+10,HNJ,Scotland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+11,UCN,Scotland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,3,0
+12,XNJ,China,M,Fully matriculated,UTCOSCS,Cognitive Science (Humanities),2,3,1
+13,JXL,China,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+14,YDX,Scotland,F,Fully matriculated,UTBSCMATBI1F,Mathematics and Biology,2,3,0
+15,TZG,England,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,3,0
+16,FUX,Scotland,M,Fully matriculated,UTMATPH,Mathematics and Physics,2,2,0
+17,HCT,Cyprus (European Union),M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+18,XZU,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,3,0
+19,ZMJ,China,F,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+20,EFN,China,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+21,JGC,England,M,Fully matriculated,UTECNST,Economics and Statistics,2,2,1
+22,BDH,Scotland,F,Fully matriculated,UTMMATHEMA1F,Mathematics,2,3,0
+23,ZRB,England,M,Fully matriculated,UTMATHB,Mathematics,2,3,0
+24,ELK,Scotland,M,Fully matriculated,UTTHEPHMPHYS,Theoretical Physics,2,2,1
+25,BAU,China,M,Fully matriculated,UTECNST,Economics and Statistics,2,2,1
+26,WPX,China,F,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+27,HWB,China,M,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+28,NSR,China,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+29,WZJ,Romania,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+30,JTK,China,M,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+31,SUD,England,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+32,EZR,Spain,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+33,PXX,England,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+34,NYC,England,M,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,2,0
+35,EAD,Spain,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+36,KSJ,Malaysia,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+37,SKG,Sri Lanka,M,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+38,UUH,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+39,ZCA,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+40,ZNF,England,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+41,SST,England,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+42,WGX,China,F,Fully matriculated,UTMATPH,Mathematics and Physics,2,2,0
+43,YKH,England,M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+44,TXK,Scotland,F,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+45,ATZ,Scotland,F,Fully matriculated,UTECNMC,Economics,2,2,1
+46,RWN,Scotland,M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+47,FLE,Russian Federation,M,Fully matriculated,UTMATPH,Mathematics and Physics,2,2,0
+48,BGD,England,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+49,FJE,Scotland,F,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+50,KMS,England,M,Fully matriculated,UTECNMC,Economics,2,2,1
+51,FKS,Scotland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+52,XPM,England,M,Fully matriculated,UTBSCDATSC1F,Data Science,2,2,1
+53,BDL,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+54,AES,Spain,M,Fully matriculated,UTMATPH,Mathematics and Physics,2,2,0
+55,ZKK,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+56,ABM,Northern Ireland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+57,GLH,Scotland,F,Fully matriculated,UTBSCDATSC1F,Data Science,2,2,1
+58,GSZ,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+59,ABP,Scotland,M,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,2,0
+60,CBP,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+61,RGM,England,M,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,2,0
+62,CLX,Scotland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+63,ACK,China,M,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+64,RJA,England,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+65,WSC,Hungary,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+66,TYT,England,M,Fully matriculated,UTMATHM,Mathematics,2,2,0
+67,HSG,Scotland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+68,XSS,Ireland,F,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,2,0
+69,SBZ,China,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+70,PTU,Spain,M,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+71,WAP,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+72,YMD,Malaysia,M,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+73,EXY,England,F,Fully matriculated,UTMATHM,Mathematics,2,2,0
+74,CBW,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+75,ULB,England,F,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,2,0
+76,LPX,England,M,Fully matriculated,UTMATMU,Mathematics and Music,2,2,0
+77,ULF,Bosnia and Herzegovina,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+78,FWE,England,M,Fully matriculated,UTMAPYB,Mathematical Physics,2,2,1
+79,HEG,Hungary,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+80,DEC,Jersey,M,Fully matriculated,UTMATMU,Mathematics and Music,2,2,0
+81,AML,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+82,NDP,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+83,GEJ,China,F,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+84,XGB,Spain,M,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,2,0
+85,AGU,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+86,TGT,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+87,FDB,China,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+88,TYW,United States of America,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,1,0
+89,HKY,Ireland,M,Interrupted,UTMATHB,Mathematics,2,2,0
+90,CJA,Norway,F,Fully matriculated,UTBSCMATBI1F,Mathematics and Biology,2,2,0
+91,LLX,China,F,Fully matriculated,UTMAPYM,Mathematical Physics,2,2,1
+92,GFP,Spain,F,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,2,0
+93,UXT,England,M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+94,GXC,China,M,Fully matriculated,UTPHYSB,Physics,2,2,1
+95,YZS,China,F,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+96,UNC,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+97,KFL,China,M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+98,EYW,England,F,Fully matriculated,UTBSCDATSC1F,Data Science,2,2,1
+99,XAU,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+100,LLZ,China,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+101,AFU,China,F,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+102,FEL,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+103,CCC,China,F,Fully matriculated,UTECNST,Economics and Statistics,2,2,1
+104,SEP,China,M,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+105,HFD,England,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+106,CKX,China,F,Fully matriculated,UTECNST,Economics and Statistics,2,2,1
+107,HXY,China,M,Fully matriculated,UTECNST,Economics and Statistics,2,2,1
+108,DZX,England,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,1
+109,EJS,China,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+110,AJW,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+111,FJD,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+112,HXZ,China,F,Fully matriculated,UTECNST,Ecomomics and Statistics,2,2,1
+113,SPC,China,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+114,EYY,China,F,Fully matriculated,UTECNST,Economics and Statistics,2,2,1
+115,ZNG,China,M,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+116,YTZ,Scotland,F,Fully matriculated,UTMATHM,Mathematics,2,2,0
+117,YBP,Italy,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+118,AMH,China,F,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+119,EEF,China,F,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+120,HDN,England,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+121,SCU,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+122,YKY,Greece,F,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+123,BAB,England,F,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+124,SZE,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+125,KLB,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+126,ZFH,China,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+127,BEM,Greece,F,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,2,0
+128,DUZ,China,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+129,YUE,England,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+130,KPX,Northern Ireland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+131,WHE,China,M,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+132,JDC,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+133,LTU,England,F,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+134,RUX,Scotland,F,Fully matriculated,UTECNMC,Economics,2,2,1
+135,HLS,China,M,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+136,CWM,China,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+137,BJC,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+138,PTB,Northern Ireland,F,Fully matriculated,UTBSCMATBI1F,Mathematics and Biology,2,2,0
+139,UFP,United States of America,F,Fully matriculated,UTECNST,Economics and Statistics,2,2,1
+140,WAF,South Africa,M,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+141,KNC,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+142,LMT,Scotland,F,Interrupted,UTMATHB,Mathematics,2,2,0
+143,PWC,England,F,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+144,DBD,Northern Ireland,F,Fully matriculated,UTBSCDATSC1F,Data Science,2,2,1
+145,MBR,China,F,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+146,JYB,England,F,Fully matriculated,UTPHIMA,Philosophy and Mathematics,2,2,0
+147,AYP,Scotland,M,Fully matriculated,UTMATPH,Mathematics and Physics,2,2,0
+148,BGB,Scotland,F,Fully matriculated,UTMATHM,Mathematics,2,2,0
+149,KUP,Germany,M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+150,JJN,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+151,PGB,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+152,AKU,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+153,MYX,Scotland,F,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+154,EDM,China,F,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+155,FDT,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,1,0
+156,LXR,China,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+157,JZC,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+158,YGM,England,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,1,0
+159,WLD,Scotland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+160,BLE,Scotland,M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+161,UUD,Scotland,F,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+162,ZDR,Scotland,M,Fully matriculated,UTMATPH,Mathematics and Physics,2,2,0
+163,AGZ,Scotland,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+164,UCR,Scotland,F,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+165,DCP,Scotland,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+166,GNX,Scotland,F,Fully matriculated,UTBSCMATBI1F,Mathematics and Biology,2,2,0
+167,KEM,England,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+168,DLY,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+169,NWM,England,F,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+170,YAY,Singapore,M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+171,DXK,England,M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+172,MCU,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+173,HKT,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+174,NFS,China,M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+175,NTN,Scotland,M,Fully matriculated,UTMMAAPPMA1F,Applied Mathematics,2,2,0
+176,ZXY,India,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+177,YJX,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+178,XJX,Northern Ireland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+179,WYG,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+180,TSA,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+181,HDL,Scotland,F,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+182,FBX,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+183,TUY,Scotland,F,Fully matriculated,UTBSCMATBI1F,Mathematics and Biology,2,2,0
+184,KWP,Scotland,M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+185,UBP,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+186,GJM,Scotland,M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+187,YTB,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+188,UAU,Scotland,F,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+189,CPJ,Scotland,F,Fully matriculated,UTMATMU,Mathematics and Music,2,2,0
+190,HBT,Scotland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+191,YDT,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+192,TCA,Scotland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,1,2,0
+193,URF,Scotland,M,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,2,0
+194,FAE,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+195,AGN,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+196,WBM,Scotland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+197,KRB,Scotland,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+198,JAU,Scotland,F,Fully matriculated,UTBSCDATSC1F,Data Science,2,2,1
+199,DRW,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+200,KTY,England,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+201,BGE,Hong Kong,F,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+202,ZLM,China,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+203,JNF,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+204,GLY,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+205,MCK,England,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+206,BUJ,Scotland,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+207,PAL,China,F,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+208,MWF,Scotland,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+209,LSP,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+210,RCX,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+211,DRL,Scotland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+212,RBB,Cyprus (European Union),F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+213,JUL,Scotland,F,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,2,0
+214,NBM,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+215,EMH,Cyprus (European Union),M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+216,RAB,Malaysia,M,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+217,JPN,Scotland,F,Fully matriculated,UTBSCMATBI1F,Mathematics and Biology,2,2,0
+218,XRW,China,M,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+219,NRT,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+220,MCA,England,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+221,ZML,Estonia,M,Fully matriculated,UTMAPYB,Mathematical Physics,2,2,1
+222,ADP,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+223,CSL,New Zealand,F,Fully matriculated,UTMATPH,Mathematics and Physics,2,2,0
+224,PGM,China,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+225,LRE,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+226,TFL,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+227,JFC,Hungary,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+228,WES,China,F,Fully matriculated,UTAPMAT,Applied Mathematics,2,2,0
+229,EYT,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+230,UWL,Scotland,M,Fully matriculated,UTMATPH,Mathematics and Physics,2,2,0
+231,SSE,China,F,Fully matriculated,UTECNST,Economics and Statistics,2,2,1
+232,MZP,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+233,FEG,China,M,Fully matriculated,UTPHILY,Philosophy,2,2,1
+234,YXF,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+235,FCR,Scotland,F,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+236,WJN,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+237,DGJ,England,F,Fully matriculated,UTECNST,Economics and Statistics,2,2,1
+238,XHD,China,F,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+239,JWH,China,F,Fully matriculated,UTECNST,Economics and Statistics,2,2,1
+240,HLK,China,M,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+241,BPS,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+242,NNK,China,M,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+243,RRJ,England,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+244,CCF,England,M,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,2,0
+245,HSF,England,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+246,EBY,China,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+247,JNZ,China,F,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+248,EZN,Hungary,F,Fully matriculated,UTMMAAPPMA1F,Applied Mathematics,2,2,0
+249,PPW,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+250,GUT,Cyprus (European Union),M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+251,HHX,Russian Federation,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+252,SLG,Taiwan,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+253,HRL,Ireland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+254,LMY,China,F,Fully matriculated,UTBSCMATBU1F,Mathematics and Business,2,2,0
+255,PZT,United States of America,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+256,CJB,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+257,YLP,Ireland,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+258,WHM,China,M,Fully matriculated,UTECNST,Economics and Statistics,2,2,1
+259,BMK,United States of America,M,Fully matriculated,UTMATPH,Mathematics and Physics,2,2,0
+260,WGU,China,M,Fully matriculated,UTECNMA,Economics and Mathematics,2,2,0
+261,DXD,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+262,JXY,China,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+263,SRP,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+264,ZPJ,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+265,EUY,China,M,Fully matriculated,UTTHEPHBSCH,Theoretical Physics,2,2,1
+266,YJN,Malaysia,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+267,LCK,Malaysia,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,1,0
+268,BML,England,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+269,SJC,England,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+270,CNZ,Wales,M,Fully matriculated,UTMATHB,Mathematics,2,1,0
+271,YAN,Malaysia,M,Fully matriculated,UTMATHB,Mathematics,2,1,0
+272,PEA,Poland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,1,0
+273,ADW,England,M,Fully matriculated,UTMATHB,Mathematics,2,1,0
+274,MSG,England,M,Fully matriculated,UTAPMAT,Applied Mathematics,2,1,0
+275,FCK,China,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+276,JXN,England,M,Fully matriculated,UTMMAAPPMA1F,Applied Mathematics,2,1,0
+277,AMW,China,M,Fully matriculated,UTMATHB,Mathematics,2,1,0
+278,LYD,England,M,Fully matriculated,UTMATHB,Mathematics,2,1,0
+279,PUY,England,M,Fully matriculated,UTMATHB,Mathematics,2,1,0
+280,LZH,China,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+281,WMZ,Northern Ireland,M,Fully matriculated,UTMATHB,Mathematics,2,1,0
+282,XJE,England,F,Fully matriculated,UTMMATHEMA1F,Mathematics,2,1,0
+283,DLA,England,M,Fully matriculated,UTMATHB,Mathematics,2,1,0
+284,WBG,China,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+285,NCF,England,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,1,0
+286,UMS,China,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+287,XTN,England,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+288,CKP,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,1,0
+289,UCG,Czech Republic,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+290,MAF,England,F,Fully matriculated,UTMMATHEMA1F,Mathematics,2,1,0
+291,MHH,China,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+292,UZF,China,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,1,0
+293,GYC,England,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,1,0
+294,FGU,China,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+295,ZNR,China,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+296,JXC,England,M,Fully matriculated,UTMATHB,Mathematics,2,1,0
+297,FTA,Scotland,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,1,0
+298,YLA,China,F,Fully matriculated,UTAPMAT,Applied Mathematics,2,1,0
+299,BNS,China,F,Fully matriculated,UTAPMAT,Applied Mathematics,2,1,0
+300,GFZ,China,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,1,0
+301,GHR,England,M,Fully matriculated,UTMATHB,Mathematics,2,1,0
+302,CPX,England,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+303,BAA,China,M,Fully matriculated,UTMATHB,Mathematics,2,1,0
+304,MHA,England,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,1,0
+305,EXT,China,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+306,UBU,United States of America,F,Fully matriculated,UTAPMAT,Applied Mathematics,2,1,0
+307,GYA,Latvia,M,Fully matriculated,UTMATHB,Mathematics,2,1,0
+308,LPT,China,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,1,0
+309,LUH,China,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,1,0
+310,ZHW,Scotland,M,Fully matriculated,UTAPMAT,Applied Mathematics,3,3,0
+311,CXC,Wales,M,Fully matriculated,UTMATHB,Mathematics,2,4,0
+312,JZG,China,F,Fully matriculated,UTMAPYB,Mathematical Physics,2,3,1
+313,CHJ,Scotland,F,Fully matriculated,UTMMATHEMA1F,Mathematics,2,3,0
+314,KCC,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,3,0
+315,NAW,Greece,M,Fully matriculated,UTCMPMA,Computer Science and Mathematics,2,3,0
+316,YZD,Scotland,M,Fully matriculated,UTMATHB,Mathematics,2,3,0
+317,PGF,Pakistan,M,Fully matriculated,UTMATST,Mathematics and Statistics,2,2,0
+318,HUP,Wales,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,1,0
+319,BNF,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+320,XPE,England,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+321,JZA,England,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+322,SGJ,England,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+323,WPD,Scotland,M,Fully matriculated,UTMMATHEMA1F,Mathematics,2,2,0
+324,DED,Scotland,F,Fully matriculated,UTMATHB,Mathematics,2,2,0
+325,AMP,China,M,Fully matriculated,UTMATHB,Mathematics,2,2,0
+326,RFU,England,F,Fully matriculated,UTTHEPHBSCH,Theoretical Physics,2,1,1
+327,DKW,China,F,Fully matriculated,UTMATST,Mathematics and Statistics,2,1,0
+328,GUN,China,F,Fully matriculated,UTMATHB,Mathematics,2,1,0
+329,ZFM,Cyprus (European Union),M,Fully matriculated,UTMATHB,Mathematics,2,1,0

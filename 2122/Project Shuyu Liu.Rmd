@@ -1,0 +1,229 @@
+---
+title: "Untitled"
+author: "Bella Liu"
+date: '2022-06-16'
+output: html_document
+---
+
+Read Data
+```{r cars}
+library("data.table")
+Post_Anon.dt <- fread("SATS_Post_Anon.csv")
+Pre_Anon.dt <- fread("SATS_Pre_Anon.csv")
+Demo_Anon.dt <- fread("SATS_Demographic_Anon.csv")
+```
+
+Step 1
+```{r}
+Pre_Anon.dt <- Pre_Anon.dt[!apply(Pre_Anon.dt[,5] == "", 1, all), ]
+Post_Anon.dt <- Post_Anon.dt[!apply(Post_Anon.dt[,5] == "", 1, all), ]
+```
+
+Drop missing values
+```{r}
+#Count missing values per column for pre data
+pre.num.col <-as.data.table( sapply(Pre_Anon.dt, function(z) sum(is.na(z))))
+#Count missing values per row for pre data
+pre.rev <-as.data.table(t(Pre_Anon.dt))
+pre.num.row <- as.data.table(sapply(pre.rev, function(z) sum(is.na(z))))
+#Count missing values per column for pro data
+post.num.col <-as.data.table( sapply(Post_Anon.dt, function(z) sum(is.na(z))))
+#Count missing values per row for pro data
+post.rev <-as.data.table(t(Post_Anon.dt))
+post.num.row <- as.data.table(sapply(post.rev, function(z) sum(is.na(z))))
+```
+
+Step 2
+```{r}
+install.packages("stringr")
+library(stringr)
+regexp <- "[[:digit:]]+"
+str_extract(colnames(Pre_Anon.dt), regexp)
+colnames(Pre_Anon.dt) = paste0("Q",str_extract(colnames(Pre_Anon.dt), regexp))
+colnames(Pre_Anon.dt)[1:5] = paste(colnames(Post_Anon.dt)[1:5])
+colnames(Post_Anon.dt) = paste(colnames(Pre_Anon.dt))
+Pre_Anon.dt[, c("RowID","Date","(Consent) Do you consent to participating in the study?") := NULL]
+Post_Anon.dt[, c("RowID","Date","(Consent) Do you consent to participating in the study?") := NULL]
+```
+
+
+```{r}
+install.packages("dplyr")
+library("dplyr")
+Post_Anon.df <- as.data.frame(Post_Anon.dt)
+Post_Anon.df1 <- Post_Anon.df %>% select(c(3:38)) %>%
+  mutate_if(is.character, as.factor)
+Post_Anon.df2 <- Post_Anon.df1 %>% mutate_at(
+  vars(starts_with("Q")),
+  funs(case_when(
+    .=="Strongly Disagree" ~ 1, 
+    .=="Disagree" ~ 2,
+    .=="Somewhat Disagree" ~ 3, 
+    .=="Neither Agree or Disagree" ~ 4,
+    .=="Somewhat Agree"~ 5, 
+    .=="Agree" ~ 6, 
+    .=="Strongly Agree" ~ 7
+  ))
+)
+
+Pre_Anon.df <- as.data.frame(Pre_Anon.dt)
+Pre_Anon.df1 <- Pre_Anon.df %>% select(c(3:38)) %>%
+  mutate_if(is.character, as.factor)
+Pre_Anon.df2 <- Pre_Anon.df1 %>% mutate_at(
+  vars(starts_with("Q")),
+  funs(case_when(
+    .=="Strongly Disagree" ~ 1, 
+    .=="Disagree" ~ 2,
+    .=="Somewhat Disagree" ~ 3, 
+    .=="Neither Agree or Disagree" ~ 4,
+    .=="Somewhat Agree"~ 5, 
+    .=="Agree" ~ 6, 
+    .=="Strongly Agree" ~ 7
+  ))
+)
+```
+
+Step 3
+```{r}
+Pre_Anon.df2$Q4 <- 7+1-Pre_Anon.df2$Q4 
+Pre_Anon.df2$Q5 <- 7+1-Pre_Anon.df2$Q5
+Pre_Anon.df2$Q7 <- 7+1-Pre_Anon.df2$Q7
+Pre_Anon.df2$Q8 <- 7+1-Pre_Anon.df2$Q8
+Pre_Anon.df2$Q11 <- 7+1-Pre_Anon.df2$Q11
+Pre_Anon.df2$Q13 <- 7+1-Pre_Anon.df2$Q13
+Pre_Anon.df2$Q15 <- 7+1-Pre_Anon.df2$Q15
+Pre_Anon.df2$Q16 <- 7+1-Pre_Anon.df2$Q16
+Pre_Anon.df2$Q18 <- 7+1-Pre_Anon.df2$Q18
+Pre_Anon.df2$Q21 <- 7+1-Pre_Anon.df2$Q21
+Pre_Anon.df2$Q24 <- 7+1-Pre_Anon.df2$Q24
+Pre_Anon.df2$Q25 <- 7+1-Pre_Anon.df2$Q25
+Pre_Anon.df2$Q26 <- 7+1-Pre_Anon.df2$Q26
+Pre_Anon.df2$Q28 <- 7+1-Pre_Anon.df2$Q28
+Pre_Anon.df2$Q30 <- 7+1-Pre_Anon.df2$Q30
+Pre_Anon.df2$Q33 <- 7+1-Pre_Anon.df2$Q33
+Pre_Anon.df2$Q34 <- 7+1-Pre_Anon.df2$Q34
+Pre_Anon.df2$Q35 <- 7+1-Pre_Anon.df2$Q35
+Pre_Anon.df2$Q36 <- 7+1-Pre_Anon.df2$Q36
+
+
+```
+
+```{r}
+Post_Anon.df2$Q4 <- 7+1-Post_Anon.df2$Q4 
+Post_Anon.df2$Q5 <- 7+1-Post_Anon.df2$Q5
+Post_Anon.df2$Q7 <- 7+1-Post_Anon.df2$Q7
+Post_Anon.df2$Q8 <- 7+1-Post_Anon.df2$Q8
+Post_Anon.df2$Q11 <- 7+1-Post_Anon.df2$Q11
+Post_Anon.df2$Q13 <- 7+1-Post_Anon.df2$Q13
+Post_Anon.df2$Q15 <- 7+1-Post_Anon.df2$Q15
+Post_Anon.df2$Q16 <- 7+1-Post_Anon.df2$Q16
+Post_Anon.df2$Q18 <- 7+1-Post_Anon.df2$Q18
+Post_Anon.df2$Q21 <- 7+1-Post_Anon.df2$Q21
+Post_Anon.df2$Q24 <- 7+1-Post_Anon.df2$Q24
+Post_Anon.df2$Q25 <- 7+1-Post_Anon.df2$Q25
+Post_Anon.df2$Q26 <- 7+1-Post_Anon.df2$Q26
+Post_Anon.df2$Q28 <- 7+1-Post_Anon.df2$Q28
+Post_Anon.df2$Q30 <- 7+1-Post_Anon.df2$Q30
+Post_Anon.df2$Q33 <- 7+1-Post_Anon.df2$Q33
+Post_Anon.df2$Q34 <- 7+1-Post_Anon.df2$Q34
+Post_Anon.df2$Q35 <- 7+1-Post_Anon.df2$Q35
+Post_Anon.df2$Q36 <- 7+1-Post_Anon.df2$Q36
+```
+
+Step 4
+```{r}
+Affect = c(3,4,15,18,19,28)
+Post_Anon.df2[, c := sum(Affect)]
+Affect_sum_post = apply(Post_Anon.df2[,c(3,4,15,18,19,28)], 1, sum)
+Affect_sum_pre = apply(Pre_Anon.df2[,c(3,4,15,18,19,28)], 1, sum)
+```
+
+```{r}
+Cognitive = c(5,11,26,31,32,35)
+Cognitive_sum_post = apply(Post_Anon.df2[,Cognitive], 1, sum)
+Cognitive_sum_pre = apply(Pre_Anon.df2[,Cognitive], 1, sum)
+```
+
+```{r}
+Value = c(7,9,10,13,16,17,21,25,33)
+Value_sum_post <- apply(Post_Anon.df2[,Value], 1, sum)
+Value_sum_pre <- apply(Pre_Anon.df2[,Value], 1, sum)
+```
+
+```{r}
+Difficulty = c(6,8,22,24,30,34,36)
+Difficulty_sum_post <-  apply(Post_Anon.df2[,Difficulty], 1, sum)
+Difficulty_sum_pre <- apply(Pre_Anon.df2[,Difficulty], 1, sum)
+```
+
+```{r}
+Interest = c(12,20,23,29)
+Interest_sum_post <- apply(Post_Anon.df2[,Interest], 1, sum)
+Interest_sum_pre <- apply(Pre_Anon.df2[,Interest], 1, sum)
+```
+
+```{r}
+Effort = c(1,2,14,27)
+Effort_sum_post <- apply(Post_Anon.df2[,Effort], 1, sum)
+Effort_sum_pre <- apply(Pre_Anon.df2[,Effort], 1, sum)
+```
+
+Step 6
+```{r}
+pre_data <- as.data.table(cbind(Pre_Anon.df[1:2],Pre_Anon.df2))
+post_data <- as.data.table(cbind(Post_Anon.df[1:2],Post_Anon.df2))
+#drop question 9 
+pre_data[, Q9 := NULL]
+post_data[, Q9 := NULL]
+```
+
+```{r}
+merge_data <- merge(pre_data, post_data, by.x="AnonID",by.y="AnonID")
+```
+
+```{r}
+num.obs.col <- as.data.table(sapply(merge_data, function(z) sum(is.na(z))))
+t<-as.data.table(t(merge_data))
+num.obs.row <- as.data.table(sapply(t, function(z) sum(is.na(z))))
+```
+
+```{r}
+#drop all NA rows
+merge_data <- na.omit(merge_data)
+merge_data %>% summary()
+```
+
+```{r}
+regexp <- "[[:digit:]]+"
+str_extract(colnames(Pre_Anon.dt), regexp)
+colnames(Pre_Anon.dt) = paste0("Q",str_extract(colnames(Pre_Anon.dt), regexp))
+for (i in 3:37){
+  colnames(merge_data)[i] <- paste0("pre.Q",str_extract(colnames(merge_data[,..i]), regexp))
+}
+for (i in 39:73){
+  colnames(merge_data)[i] <- paste0("post.Q",str_extract(colnames(merge_data[,..i]), regexp))
+}
+```
+
+Merge demographic data with merge data
+```{r}
+full_data <- merge(Demo_Anon.dt, merge_data, by.x="AnonID",by.y="AnonID")
+full_data[, c("RowID","Programme Of Study Sought Code") := NULL]
+```
+
+
+Grouping of some demographic variables
+```{r}
+full_data[,5][full_data[,5] == "Applied Mathematics", ]<- "Mathematics"
+full_data[,5][full_data[,5] == "Data Science", ]<- "Statistics"
+full_data[,5][full_data[,5] == "Mathematics and Statistics", ]<- "Statistics"
+full_data[,5][full_data[,5] == "Computer Science and Mathematics", ]<- "Statistics"
+df <- as.matrix(full_data)
+df[grepl(pattern = "Economics", x = df)] <- "Economics"
+df[grepl(pattern = "Mathematics and", x = df)] <- "Mathematics & any science"
+df[grepl(pattern = "Physics", x = df)] <- "Others"
+df[grepl(pattern = "Philosophy", x = df)] <- "Others"
+full_data.2 <- as.data.table(df)
+full_data.2[,5][full_data[,5] == "Statistics", ]<- "Mathematics & Statistics"
+```
+
