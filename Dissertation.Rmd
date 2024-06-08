@@ -23,11 +23,11 @@ library(car)
 # Step 1:Load and clean the dataset
 ```{r, message=FALSE}
 library(readxl)
-Pre_2022 <- read_xlsx("/Users/liqinxuan/Desktop/Dissertation/SATS_2022_Pre_Anon.xlsx")
-Post_2022 <- read_xlsx("/Users/liqinxuan/Desktop/Dissertation/SATS_2022_Post_Anon.xlsx")
-Pre_2023 <- read_xlsx("/Users/liqinxuan/Desktop/Dissertation/SATS_2023_Pre_Anon.xlsx")
-Post_2023 <- read_xlsx("/Users/liqinxuan/Desktop/Dissertation/SATS_2023_Post_Anon.xlsx")
-Demo_2022 <- read_xlsx("/Users/liqinxuan/Desktop/Dissertation/SATS_2022_Demographic_Anon.xlsx")
+Pre_2022 <- read_xlsx("SATS_2022_Pre_Anon.xlsx")
+Post_2022 <- read_xlsx("SATS_2022_Post_Anon.xlsx")
+Pre_2023 <- read_xlsx("SATS_2023_Pre_Anon.xlsx")
+Post_2023 <- read_xlsx("SATS_2023_Post_Anon.xlsx")
+Demo_2022 <- read_xlsx("SATS_2022_Demographic_Anon.xlsx")
 
 # Simplify the name of each column
 # 2022 Pre
@@ -106,7 +106,15 @@ colnames(Post_2023) <- Post_2023_colnames_old
 
 ```
 
+
+```{r}
+glimpse(Pre_2022)
+```
+
+
+
 Then we count the number of available and unavailable results
+
 ```{r, message=FALSE}
 # Pre 2022
 # Count the number of "No, I do not consent" in the Consent column
@@ -196,84 +204,84 @@ print(paste("Unavailable results in Post_2022: ", Post_2022_unavailable_results)
 ```
 
 ```{r, message=FALSE}
-# Pre 2023
-# Count the number of "No, I do not consent" in the Consent column
-Pre_2023_consent_count <- Pre_2023 %>%
-  filter(Consent == "No, I do not consent") %>%
-  nrow()
-
-print(paste0("Number of 'No, I do not consent' responses: ", Pre_2023_consent_count))
-
-# Remove the rows with "No, I do not consent" in the Consent column
-Pre_2023_clean_consent <- Pre_2023 %>%
-  filter(Consent != "No, I do not consent")
-
-# Count the number of responses that are not "Strongly Disagree" in the Validate column
-Pre_2023_validate_count <- Pre_2023_clean_consent %>%
-  filter(Validate != "Strongly Disagree") %>%
-  nrow()
-
-print(paste0("Number of responses not 'Strongly Disagree' in the Validate column: ",
-             Pre_2023_validate_count))
-
-# Remove the rows without "Strongly Disagree" in the Validate column
-Pre_2023_clean <- Pre_2023_clean_consent %>%
-  filter(Validate == "Strongly Disagree")
-
-# Calculate the number of original rows (total responses)
-Pre_2023_total_responses <- nrow(Pre_2023)
-
-# Calculate the number of remaining rows (available results)
-Pre_2023_available_results <- nrow(Pre_2023_clean)
-
-# Calculate the number of unavailable results
-Pre_2023_unavailable_results <- Pre_2023_total_responses - 
-  Pre_2023_available_results
-
-# Print the results
-print(paste("Total responses in Pre_2023: ", Pre_2023_total_responses))
-print(paste("Available results in Pre_2023: ", Pre_2023_available_results))
-print(paste("Unavailable results in Pre_2023: ", Pre_2023_unavailable_results))
+# # Pre 2023
+# # Count the number of "No, I do not consent" in the Consent column
+# Pre_2023_consent_count <- Pre_2023 %>%
+#   filter(Consent == "No, I do not consent") %>%
+#   nrow()
+# 
+# print(paste0("Number of 'No, I do not consent' responses: ", Pre_2023_consent_count))
+# 
+# # Remove the rows with "No, I do not consent" in the Consent column
+# Pre_2023_clean_consent <- Pre_2023 %>%
+#   filter(Consent != "No, I do not consent")
+# 
+# # Count the number of responses that are not "Strongly Disagree" in the Validate column
+# Pre_2023_validate_count <- Pre_2023_clean_consent %>%
+#   filter(Validate != "Strongly Disagree") %>%
+#   nrow()
+# 
+# print(paste0("Number of responses not 'Strongly Disagree' in the Validate column: ",
+#              Pre_2023_validate_count))
+# 
+# # Remove the rows without "Strongly Disagree" in the Validate column
+# Pre_2023_clean <- Pre_2023_clean_consent %>%
+#   filter(Validate == "Strongly Disagree")
+# 
+# # Calculate the number of original rows (total responses)
+# Pre_2023_total_responses <- nrow(Pre_2023)
+# 
+# # Calculate the number of remaining rows (available results)
+# Pre_2023_available_results <- nrow(Pre_2023_clean)
+# 
+# # Calculate the number of unavailable results
+# Pre_2023_unavailable_results <- Pre_2023_total_responses - 
+#   Pre_2023_available_results
+# 
+# # Print the results
+# print(paste("Total responses in Pre_2023: ", Pre_2023_total_responses))
+# print(paste("Available results in Pre_2023: ", Pre_2023_available_results))
+# print(paste("Unavailable results in Pre_2023: ", Pre_2023_unavailable_results))
 ```
 
 ```{r, message=FALSE}
-# Post 2023
-# Count the number of "No, I do not consent" in the Consent column
-Post_2023_consent_count <- Post_2023 %>%
-  filter(Consent == "No, I do not consent") %>%
-  nrow()
-
-print(paste0("Number of 'No, I do not consent' responses: ", Post_2023_consent_count))
-
-# Remove the rows with "No, I do not consent" in the Consent column
-Post_2023_clean_consent <- Post_2023 %>%
-  filter(Consent != "No, I do not consent")
-
-# Count the number of responses that are not "Strongly Disagree" in the Validate column
-Post_2023_validate_count <- Post_2023_clean_consent %>%
-  filter(Validate != "Strongly Agree") %>%
-  nrow()
-
-print(paste0("Number of responses not 'Strongly Agree' in the Validate column: ",
-             Post_2023_validate_count))
-
-# Remove the rows without "Strongly Disagree" in the Validate column
-Post_2023_clean <- Post_2023_clean_consent %>%
-  filter(Validate == "Strongly Agree")
-
-# Calculate the number of original rows (total responses)
-Post_2023_total_responses <- nrow(Post_2023)
-
-# Calculate the number of remaining rows (available results)
-Post_2023_available_results <- nrow(Post_2023_clean)
-
-# Calculate the number of unavailable results
-Post_2023_unavailable_results <- Post_2023_total_responses - Post_2023_available_results
-
-# Print the results
-print(paste("Total responses in Post_2023: ", Post_2023_total_responses))
-print(paste("Available results in Post_2023: ", Post_2023_available_results))
-print(paste("Unavailable results in Post_2023: ", Post_2023_unavailable_results))
+# # Post 2023
+# # Count the number of "No, I do not consent" in the Consent column
+# Post_2023_consent_count <- Post_2023 %>%
+#   filter(Consent == "No, I do not consent") %>%
+#   nrow()
+# 
+# print(paste0("Number of 'No, I do not consent' responses: ", Post_2023_consent_count))
+# 
+# # Remove the rows with "No, I do not consent" in the Consent column
+# Post_2023_clean_consent <- Post_2023 %>%
+#   filter(Consent != "No, I do not consent")
+# 
+# # Count the number of responses that are not "Strongly Disagree" in the Validate column
+# Post_2023_validate_count <- Post_2023_clean_consent %>%
+#   filter(Validate != "Strongly Agree") %>%
+#   nrow()
+# 
+# print(paste0("Number of responses not 'Strongly Agree' in the Validate column: ",
+#              Post_2023_validate_count))
+# 
+# # Remove the rows without "Strongly Disagree" in the Validate column
+# Post_2023_clean <- Post_2023_clean_consent %>%
+#   filter(Validate == "Strongly Agree")
+# 
+# # Calculate the number of original rows (total responses)
+# Post_2023_total_responses <- nrow(Post_2023)
+# 
+# # Calculate the number of remaining rows (available results)
+# Post_2023_available_results <- nrow(Post_2023_clean)
+# 
+# # Calculate the number of unavailable results
+# Post_2023_unavailable_results <- Post_2023_total_responses - Post_2023_available_results
+# 
+# # Print the results
+# print(paste("Total responses in Post_2023: ", Post_2023_total_responses))
+# print(paste("Available results in Post_2023: ", Post_2023_available_results))
+# print(paste("Unavailable results in Post_2023: ", Post_2023_unavailable_results))
 
 ```
 
@@ -293,6 +301,7 @@ print(summary_available)
 ```
 
 # Step 2: Convert answers to numbers of each question
+
 ```{r, warning=FALSE, message=FALSE}
 library(dplyr)
 # Define a vector for the responses
@@ -307,146 +316,199 @@ columns <- c(paste0("Q", 1:8), paste0("Q", 10:36))  # Exclude Q9
 # Define negatively worded questions
 negatively_worded_questions <- c("Q4", "Q5", "Q7", "Q8", "Q11", "Q13", "Q15", "Q16", "Q18","Q21", "Q24", "Q25", "Q26", "Q28", "Q30", "Q33", "Q34", "Q35", "Q36") # replace these with your actual negatively worded questions
 
+
+recode_responses <- function(column) {
+  dplyr::recode(column,
+                "Strongly Agree" = 7,
+                "Agree" = 6,
+                "Somewhat Agree" = 5,
+                "Neither Agree or Disagree" = 4,
+                "Somewhat Disagree" = 3,
+                "Disagree" = 2,
+                "Strongly Disagree" = 1,
+                .default = NA_real_)
+}
+
 # Convert responses to scores
-for (column in columns) {
-  Pre_2022_clean[[column]] <- recode(Pre_2022_clean[[column]], 
-                                     !!!setNames(scores, responses))
+#for (column in columns) {
+#  Pre_2022_clean[[column]] <- recode(Pre_2022_clean[[column]], !!!setNames(scores, responses))
+  
+#  # Reverse scores for negatively worded questions
+#  if (column %in% negatively_worded_questions) {
+#    Pre_2022_clean[[column]] <- 8 - as.numeric(Pre_2022_clean[[column]])
+#  }
+#}
+
+#Pre_2022_clean <- Pre_2022_clean %>%
+#  mutate(across(all_of(columns), ~ recode_responses(.x))) %>%
+#  mutate(across(all_of(negatively_worded_questions), ~ 8 - .x))
+
+# Convert responses to scores and add as new columns
+Pre_2022_clean <- Pre_2022_clean %>%
+  mutate(across(all_of(columns), ~ recode_responses(.x), .names = "num_{col}")) %>%
+  mutate(across(all_of(negatively_worded_questions), ~ 8 - get(paste0("num_", cur_column())), .names = "rev_{col}"))
+
+#####################################################
+# Combine the original and recoded columns as needed
+# Here, we keep the original columns and add new columns with scores and reversed scores
+Pre_2022_clean_new <- Pre_2022_clean %>%
+  select(RowID, AnonID, Date, Consent, starts_with("num_"), starts_with("rev_"))
+
+##################### POST ##############################
+#######################################################
+columns_post <- paste0("Q", 1:36)
+
+#for (column in columns) {
+#  Post_2022_clean[[column]] <- recode(Post_2022_clean[[column]], 
+#                                      !!!setNames(scores, responses))
+  
+#  # Reverse scores for negatively worded questions
+#  if (column %in% negatively_worded_questions) {
+#    Post_2022_clean[[column]] <- 8 - Post_2022_clean[[column]]
+#  }
+#}
+
+Post_2022_clean <- Post_2022_clean %>%
+  mutate(across(all_of(columns_post), ~ recode_responses(.x), .names = "num_{col}")) %>%
+  mutate(across(all_of(negatively_worded_questions), ~ 8 - get(paste0("num_", cur_column())), .names = "rev_{col}"))
+
+
+Post_2022_clean_new <- Post_2022_clean %>%
+  select(RowID, AnonID, Date, Consent, starts_with("num_"), starts_with("rev_"))
+
+#for (column in columns) {
+#  Pre_2023_clean[[column]] <- recode(Pre_2023_clean[[column]], 
+#                                     !!!setNames(scores, responses))
   
   # Reverse scores for negatively worded questions
-  if (column %in% negatively_worded_questions) {
-    Pre_2022_clean[[column]] <- 8 - Pre_2022_clean[[column]]
-  }
-}
+#  if (column %in% negatively_worded_questions) {
+#    Pre_2023_clean[[column]] <- 8 - Pre_2023_clean[[column]]
+#  }
+#}
 
-columns <- paste0("Q", 1:36)
-
-for (column in columns) {
-  Post_2022_clean[[column]] <- recode(Post_2022_clean[[column]], 
-                                      !!!setNames(scores, responses))
+#for (column in columns) {
+#  Post_2023_clean[[column]] <- recode(Post_2023_clean[[column]],
+#                                      !!!setNames(scores, responses))
   
-  # Reverse scores for negatively worded questions
-  if (column %in% negatively_worded_questions) {
-    Post_2022_clean[[column]] <- 8 - Post_2022_clean[[column]]
-  }
-}
-
-for (column in columns) {
-  Pre_2023_clean[[column]] <- recode(Pre_2023_clean[[column]], 
-                                     !!!setNames(scores, responses))
-  
-  # Reverse scores for negatively worded questions
-  if (column %in% negatively_worded_questions) {
-    Pre_2023_clean[[column]] <- 8 - Pre_2023_clean[[column]]
-  }
-}
-
-for (column in columns) {
-  Post_2023_clean[[column]] <- recode(Post_2023_clean[[column]],
-                                      !!!setNames(scores, responses))
-  
-  # Reverse scores for negatively worded questions
-  if (column %in% negatively_worded_questions) {
-    Post_2023_clean[[column]] <- 8 - Post_2023_clean[[column]]
-  }
-}
+#  # Reverse scores for negatively worded questions
+#  if (column %in% negatively_worded_questions) {
+#    Post_2023_clean[[column]] <- 8 - Post_2023_clean[[column]]
+#  }
+# }
 
 ```
 
 # Step 3: Calculate Scores of each component
+
 ```{r, message=FALSE}
 # Pre 2022
 # Create new columns for the means
-Pre_2022_clean$Affect <- rowMeans(Pre_2022_clean[c("Q3", "Q4", "Q15", "Q18", "Q19", "Q28")], na.rm = TRUE)
-Pre_2022_clean$Cognitive_Competence <- rowMeans(Pre_2022_clean[c("Q5", "Q11", "Q26", "Q31", "Q32", "Q35")], na.rm = TRUE)
-Pre_2022_clean$Value <- rowMeans(Pre_2022_clean[c("Q7", "Q10", "Q13", "Q16", "Q17", "Q21", "Q25", "Q33")], na.rm = TRUE)
-Pre_2022_clean$Difficulty <- rowMeans(Pre_2022_clean[c("Q6", "Q8", "Q22", "Q24", "Q30", "Q34", "Q36")], na.rm = TRUE)
-Pre_2022_clean$Interest <- rowMeans(Pre_2022_clean[c("Q12", "Q20", "Q23", "Q29")], na.rm = TRUE)
-Pre_2022_clean$Effort <- rowMeans(Pre_2022_clean[c("Q1", "Q2", "Q14", "Q27")], na.rm = TRUE)
+Pre_2022_clean_new$Affect <- rowMeans(Pre_2022_clean_new[c("num_Q3", "num_Q4", "num_Q15", 
+                                                           "num_Q18", "num_Q19", "num_Q28")], na.rm = TRUE)
+
+Pre_2022_clean_new$Cognitive_Competence <- rowMeans(Pre_2022_clean_new[c("num_Q5", "num_Q11", "num_Q26", 
+                                                            "num_Q31", "num_Q32", "num_Q35")], na.rm = TRUE)
+
+#!!!!!!!!!!!!!ignore Q9
+Pre_2022_clean_new$Value <- rowMeans(Pre_2022_clean_new[c("num_Q7", "num_Q10", "num_Q13", "num_Q16", "num_Q17", 
+                                                          "num_Q21", "num_Q25", "num_Q33")], na.rm = TRUE)
+
+Pre_2022_clean_new$Difficulty <- rowMeans(Pre_2022_clean_new[c("num_Q6", "num_Q8", "num_Q22", 
+                                                 "num_Q24", "num_Q30", "num_Q34", "num_Q36")], na.rm = TRUE)
+
+Pre_2022_clean_new$Interest <- rowMeans(Pre_2022_clean_new[c("num_Q12", "num_Q20", 
+                                                             "num_Q23", "num_Q29")], na.rm = TRUE)
+
+Pre_2022_clean_new$Effort <- rowMeans(Pre_2022_clean_new[c("num_Q1", "num_Q2", 
+                                                           "num_Q14", "num_Q27")], na.rm = TRUE)
 
 ```
 
 ```{r, message=FALSE}
 # Post 2022
 # Create new columns for the means
-Post_2022_clean$Affect <- rowMeans(Post_2022_clean[c("Q3", "Q4", "Q15", "Q18",
-                                                     "Q19", "Q28")], na.rm = TRUE)
-Post_2022_clean$Cognitive_Competence <- rowMeans(Post_2022_clean[c("Q5", "Q11",
-                                                                   "Q26", "Q31",
-                                                                   "Q32", "Q35")],
-                                                 na.rm = TRUE)
+Post_2022_clean_new$Affect <- rowMeans(Post_2022_clean_new[c("num_Q3", "num_Q4", "num_Q15", 
+                                                     "num_Q18", "num_Q19", "num_Q28")], na.rm = TRUE)
+
+Post_2022_clean_new$Cognitive_Competence <- rowMeans(Post_2022_clean_new[c("num_Q5", "num_Q11", 
+                                                    "num_Q26", "num_Q31", "num_Q32", "num_Q35")], na.rm = TRUE)
 #!!!!!!!!!!!!!ignore Q9
-Post_2022_clean$Value <- rowMeans(Post_2022_clean[c("Q7", "Q10", "Q13", "Q16",
-                                                    "Q17", "Q21", "Q25", "Q33")],
-                                  na.rm = TRUE)
-Post_2022_clean$Difficulty <- rowMeans(Post_2022_clean[c("Q6", "Q8", "Q22", 
-                                                         "Q24", "Q30", "Q34", "Q36")],
-                                       na.rm = TRUE)
-Post_2022_clean$Interest <- rowMeans(Post_2022_clean[c("Q12", "Q20", "Q23", "Q29")],
-                                     na.rm = TRUE)
-Post_2022_clean$Effort <- rowMeans(Post_2022_clean[c("Q1", "Q2", "Q14", "Q27")],
-                                   na.rm = TRUE)
+Post_2022_clean_new$Value <- rowMeans(Post_2022_clean_new[c("num_Q7", "num_Q10", "num_Q13", "num_Q16",
+                                                    "num_Q17", "num_Q21", "num_Q25", "num_Q33")], na.rm = TRUE)
+
+Post_2022_clean_new$Difficulty <- rowMeans(Post_2022_clean_new[c("num_Q6", "num_Q8", "num_Q22", 
+                                            "num_Q24", "num_Q30", "num_Q34", "num_Q36")], na.rm = TRUE)
+
+Post_2022_clean_new$Interest <- rowMeans(Post_2022_clean_new[c("num_Q12", "num_Q20", 
+                                                               "num_Q23", "num_Q29")], na.rm = TRUE)
+
+Post_2022_clean_new$Effort <- rowMeans(Post_2022_clean_new[c("num_Q1", "num_Q2", "num_Q14", "num_Q27")], na.rm = TRUE)
 
 ```
 
 ```{r, message=FALSE}
 # Pre 2023
 # Create new columns for the means
-Pre_2023_clean$Affect <- rowMeans(Pre_2023_clean[c("Q3", "Q4", "Q15", "Q18", "Q19",
-                                                   "Q28")], na.rm = TRUE)
-Pre_2023_clean$Cognitive_Competence <- rowMeans(Pre_2023_clean[c("Q5", "Q11", "Q26",
-                                                                 "Q31", "Q32", 
-                                                                 "Q35")], 
-                                                na.rm = TRUE)
-Pre_2023_clean$Value <- rowMeans(Pre_2023_clean[c("Q7", "Q9", "Q10", "Q13", "Q16",
-                                                  "Q17", "Q21", "Q25", "Q33")],
-                                 na.rm = TRUE)
-Pre_2023_clean$Difficulty <- rowMeans(Pre_2023_clean[c("Q6", "Q8", "Q22", "Q24",
-                                                       "Q30", "Q34", "Q36")], 
-                                      na.rm = TRUE)
-Pre_2023_clean$Interest <- rowMeans(Pre_2023_clean[c("Q12", "Q20", "Q23", "Q29")], 
-                                    na.rm = TRUE)
-Pre_2023_clean$Effort <- rowMeans(Pre_2023_clean[c("Q1", "Q2", "Q14", "Q27")], 
-                                  na.rm = TRUE)
+#Pre_2023_clean$Affect <- rowMeans(Pre_2023_clean[c("Q3", "Q4", "Q15", "Q18", "Q19",
+#                                                   "Q28")], na.rm = TRUE)
+#Pre_2023_clean$Cognitive_Competence <- rowMeans(Pre_2023_clean[c("Q5", "Q11", "Q26",
+#                                                                 "Q31", "Q32", 
+#                                                                 "Q35")], 
+#                                                na.rm = TRUE)
+#Pre_2023_clean$Value <- rowMeans(Pre_2023_clean[c("Q7", "Q9", "Q10", "Q13", "Q16",
+#                                                  "Q17", "Q21", "Q25", "Q33")],
+#                                 na.rm = TRUE)
+#Pre_2023_clean$Difficulty <- rowMeans(Pre_2023_clean[c("Q6", "Q8", "Q22", "Q24",
+#                                                       "Q30", "Q34", "Q36")], 
+#                                      na.rm = TRUE)
+#Pre_2023_clean$Interest <- rowMeans(Pre_2023_clean[c("Q12", "Q20", "Q23", "Q29")], 
+#                                    na.rm = TRUE)
+#Pre_2023_clean$Effort <- rowMeans(Pre_2023_clean[c("Q1", "Q2", "Q14", "Q27")], 
+#                                  na.rm = TRUE)
 
 ```
 
 ```{r, message=FALSE}
 # Post 2023
 # Create new columns for the means
-Post_2023_clean$Affect <- rowMeans(Post_2023_clean[c("Q3", "Q4", "Q15", "Q18", 
-                                                     "Q19", "Q28")], na.rm = TRUE)
-Post_2023_clean$Cognitive_Competence <- rowMeans(Post_2023_clean[c("Q5", "Q11",
-                                                                   "Q26", "Q31",
-                                                                   "Q32", "Q35")], 
-                                                 na.rm = TRUE)
-Post_2023_clean$Value <- rowMeans(Post_2023_clean[c("Q7", "Q9", "Q10", "Q13", 
-                                                    "Q16", "Q17", "Q21", "Q25",
-                                                    "Q33")], na.rm = TRUE)
-Post_2023_clean$Difficulty <- rowMeans(Post_2023_clean[c("Q6", "Q8", "Q22", "Q24",
-                                                         "Q30", "Q34", "Q36")], 
-                                       na.rm = TRUE)
-Post_2023_clean$Interest <- rowMeans(Post_2023_clean[c("Q12", "Q20", "Q23", "Q29")],
-                                     na.rm = TRUE)
-Post_2023_clean$Effort <- rowMeans(Post_2023_clean[c("Q1", "Q2", "Q14", "Q27")],
-                                   na.rm = TRUE)
+#Post_2023_clean$Affect <- rowMeans(Post_2023_clean[c("Q3", "Q4", "Q15", "Q18", 
+#                                                     "Q19", "Q28")], na.rm = TRUE)
+#Post_2023_clean$Cognitive_Competence <- rowMeans(Post_2023_clean[c("Q5", "Q11",
+#                                                                   "Q26", "Q31",
+#                                                                   "Q32", "Q35")], 
+#                                                 na.rm = TRUE)
+#Post_2023_clean$Value <- rowMeans(Post_2023_clean[c("Q7", "Q9", "Q10", "Q13", 
+#                                                    "Q16", "Q17", "Q21", "Q25",
+#                                                    "Q33")], na.rm = TRUE)
+#Post_2023_clean$Difficulty <- rowMeans(Post_2023_clean[c("Q6", "Q8", "Q22", "Q24",
+#                                                         "Q30", "Q34", "Q36")], 
+#                                       na.rm = TRUE)
+#Post_2023_clean$Interest <- rowMeans(Post_2023_clean[c("Q12", "Q20", "Q23", "Q29")],
+#                                     na.rm = TRUE)
+#Post_2023_clean$Effort <- rowMeans(Post_2023_clean[c("Q1", "Q2", "Q14", "Q27")],
+#                                   na.rm = TRUE)
 
 ```
 
+
+
 # Step 4: Calculate statistical characteristics and observe the distributions of each component
+
+
 ```{r, message=FALSE}
 # Pre 2022
 # Calculate statistical characteristics
-Pre_2022_summary <- summary(Pre_2022_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")])
+Pre_2022_summary <- summary(Pre_2022_clean_new[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")])
 print(Pre_2022_summary)
 
 # Calculate variance
 for(column in c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")) {
-  cat("Variance of", column, ":", var(Pre_2022_clean[[column]], na.rm = TRUE), "\n")
+  cat("Variance of", column, ":", var(Pre_2022_clean_new[[column]], na.rm = TRUE), "\n")
 }
 
 # Melt the data into long format for easier plotting
-Pre_2022_long <- melt(Pre_2022_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")], id.vars = NULL, variable.name = "Component", 
-                      value.name = "Score")
+Pre_2022_long <- melt(Pre_2022_clean_new[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")], 
+                      id.vars = NULL, variable.name = "Component", value.name = "Score")
 
 # Create a histogram
 ggplot(Pre_2022_long, aes(x = Score)) +
@@ -462,16 +524,16 @@ ggplot(Pre_2022_long, aes(x = Score)) +
 ```{r, message=FALSE}
 # Post 2022
 # Calculate statistical characteristics
-Post_2022_summary <- summary(Post_2022_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")])
+Post_2022_summary <- summary(Post_2022_clean_new[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")])
 print(Post_2022_summary)
 
 # Calculate variance
 for(column in c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")) {
-  cat("Variance of", column, ":", var(Post_2022_clean[[column]], na.rm = TRUE), "\n")
+  cat("Variance of", column, ":", var(Post_2022_clean_new[[column]], na.rm = TRUE), "\n")
 }
 
 # Melt the data into long format for easier plotting
-Post_2022_long <- melt(Post_2022_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")], id.vars = NULL, variable.name = "Component", 
+Post_2022_long <- melt(Post_2022_clean_new[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")], id.vars = NULL, variable.name = "Component", 
                       value.name = "Score")
 
 # Create a histogram
@@ -485,14 +547,19 @@ ggplot(Post_2022_long, aes(x = Score)) +
 ```
 
 Then we compare the distribution of scores for each component between the two results, now we just look at the overall picture of each result instead of matching the pre-course and post-course results for the same person:
+
 ```{r, message=FALSE}
 # boxplots of 2022 
 # Add a new column to each dataframe to indicate whether it's pre or post
-Pre_2022_clean$Course <- "Pre"
-Post_2022_clean$Course <- "Post"
+Pre_2022_clean_new$Course <- "Pre"
+Post_2022_clean_new$Course <- "Post"
+
+Pre_2022_clean_new %>% select(RowID, AnonID, Date, Consent, Affect, Cognitive_Competence, Value, 
+                              Difficulty, Interest, Effort, Course)
+
 
 # Combine the two dataframes
-combined_2022 <- rbind(Pre_2022_clean, Post_2022_clean)
+combined_2022 <- rbind(Pre_2022_clean_new, Post_2022_clean_new)
 
 # Reshape the data into long format for easier plotting
 df_long_2022 <- melt(combined_2022[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort", "Course")], id.vars = "Course", 
@@ -550,64 +617,68 @@ ggplot(df_variance_2022, aes(x = Component, y = Variance, fill = Course)) +
 ```{r, message=FALSE}
 # Pre 2023
 # Calculate statistical characteristics
-Pre_2023_summary <- summary(Pre_2023_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")])
-print(Pre_2023_summary)
+#Pre_2023_summary <- summary(Pre_2023_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")])
+#print(Pre_2023_summary)
 
 # Calculate variance
-for(column in c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")) {
-  cat("Variance of", column, ":", var(Pre_2023_clean[[column]], na.rm = TRUE), "\n")
-}
+#for(column in c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")) {
+#  cat("Variance of", column, ":", var(Pre_2023_clean[[column]], na.rm = TRUE), "\n")
+#}
 
 # Melt the data into long format for easier plotting
-Pre_2023_long <- melt(Pre_2023_clean[, c("Affect", "Cognitive_Competence", "Value",
-                                         "Difficulty", "Interest", "Effort")], 
-                      id.vars = NULL, variable.name = "Component", 
-                      value.name = "Score")
+#Pre_2023_long <- melt(Pre_2023_clean[, c("Affect", "Cognitive_Competence", "Value",
+#                                         "Difficulty", "Interest", "Effort")], 
+#                      id.vars = NULL, variable.name = "Component", 
+#                      value.name = "Score")
 
 # Create a histogram
-ggplot(Pre_2023_long, aes(x = Score)) +
-  geom_histogram(binwidth = 0.5, fill = "blue", alpha = 0.5) +
-  facet_wrap(~Component, scales = "free") +
-  theme_minimal() +
-  xlab("Score") +
-  ylab("Count") +
-  ggtitle("Distribution of Component Scores of Pre 2023")
+#ggplot(Pre_2023_long, aes(x = Score)) +
+#  geom_histogram(binwidth = 0.5, fill = "blue", alpha = 0.5) +
+#  facet_wrap(~Component, scales = "free") +
+#  theme_minimal() +
+#  xlab("Score") +
+#  ylab("Count") +
+#  ggtitle("Distribution of Component Scores of Pre 2023")
 
 ```
 
 ```{r, message=FALSE}
 # Post 2023
 # Calculate statistical characteristics
-Post_2023_summary <- summary(Post_2023_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")])
-print(Post_2023_summary)
+#Post_2023_summary <- summary(Post_2023_clean[, c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")])
+#print(Post_2023_summary)
 
 # Calculate variance
-for(column in c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")) {
-  cat("Variance of", column, ":", var(Post_2023_clean[[column]], na.rm = TRUE), "\n")
-}
+#for(column in c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")) {
+#  cat("Variance of", column, ":", var(Post_2023_clean[[column]], na.rm = TRUE), "\n")
+#}
 
 # Melt the data into long format for easier plotting
-Post_2023_long <- melt(Post_2023_clean[, c("Affect", "Cognitive_Competence", 
-                                           "Value", "Difficulty", "Interest",
-                                           "Effort")], id.vars = NULL,
-                       variable.name = "Component", 
-                      value.name = "Score")
+#Post_2023_long <- melt(Post_2023_clean[, c("Affect", "Cognitive_Competence", 
+#                                           "Value", "Difficulty", "Interest",
+#                                           "Effort")], id.vars = NULL,
+#                       variable.name = "Component", 
+#                      value.name = "Score")
 
 # Create a histogram
-ggplot(Post_2023_long, aes(x = Score)) +
-  geom_histogram(binwidth = 0.5, fill = "blue", alpha = 0.5) +
-  facet_wrap(~Component, scales = "free") +
-  theme_minimal() +
-  xlab("Score") +
-  ylab("Count") +
-  ggtitle("Distribution of Component Scores of Post 2023")
+#ggplot(Post_2023_long, aes(x = Score)) +
+#  geom_histogram(binwidth = 0.5, fill = "blue", alpha = 0.5) +
+#  facet_wrap(~Component, scales = "free") +
+#  theme_minimal() +
+#  xlab("Score") +
+#  ylab("Count") +
+#  ggtitle("Distribution of Component Scores of Post 2023")
 ```
 
 # Step 5: Combine the pre and post results for the same person
 
 ```{r, message=FALSE}
 # Merge the two dataframes on 'AnonID'
-combined_2022_individual <- merge(Pre_2022_clean, Post_2022_clean, by = "AnonID", 
+# Add a new column to each dataframe to indicate whether it's pre or post
+Pre_2022_clean_new$Course <- "Pre"
+Post_2022_clean_new$Course <- "Post"
+
+combined_2022_individual <- merge(Pre_2022_clean_new, Post_2022_clean_new, by = "AnonID", 
                                   suffixes = c("_pre", "_post"))
 
 # Check the first few rows of the combined dataframe
@@ -617,19 +688,79 @@ components_2022 <- c("Affect", "Cognitive_Competence", "Value", "Difficulty",
                      "Interest", "Effort")
 
 # Plot scatterplots for each component
-for (component in components_2022) {
-    p <- ggplot(combined_2022_individual, aes_string(x = paste0(component, "_pre"), 
-                                                     y = paste0(component, "_post"))) +
-        geom_point() +
-        geom_abline(slope = 1, intercept = 0, color = "red") +
-        labs(title = paste("Comparison of", component, "Scores"),
-             x = paste("Pre-course", component),
-             y = paste("Post-course", component))
-    
-    print(p)
-}
+#for (component in components_2022) {
+#    p <- ggplot(combined_2022_individual, aes_string(x = paste0(component, "_pre"), 
+#                                                     y = paste0(component, "_post"))) +
+#        geom_point() +
+#        geom_abline(slope = 1, intercept = 0, color = "red") +
+#        labs(title = paste("Comparison of", component, "Scores"),
+#             x = paste("Pre-course", component),
+#             y = paste("Post-course", component))
+#    
+#    print(p)
+#}
 
 ```
+
+Some new boxplots and graphs for the filtered data
+
+```{r}
+# Reshape the data into long format for easier plotting
+df_long_2022 <- melt(combined_2022_individual[, c("Affect_pre", "Cognitive_Competence_pre", "Value_pre", "Difficulty_pre", "Interest_pre", "Effort_pre",
+                                                  "Affect_post", "Cognitive_Competence_post", "Value_post", "Difficulty_post", "Interest_post", "Effort_post", "Course_pre", "Course_post")], 
+                     id.vars = c("Course_pre", "Course_post"), 
+                     variable.name = "Component", value.name = "Score")
+
+# Adjust the 'Course' column to indicate pre or post course
+df_long_2022 <- df_long_2022 %>%
+  mutate(Course = case_when(
+    grepl("_pre", Component) ~ "Pre",
+    grepl("_post", Component) ~ "Post"
+  ),
+  Component = gsub("_pre|_post", "", Component))
+
+# Convert 'Course' to a factor and specify the level order
+df_long_2022$Course <- factor(df_long_2022$Course, levels = c("Pre", "Post"))
+
+# Create boxplots
+ggplot(df_long_2022, aes(x = Component, y = Score, fill = Course)) +
+  geom_boxplot() +
+  theme_minimal() +
+  xlab("Component") +
+  ylab("Score") +
+  ggtitle("Comparison of Component Scores Between Pre- and Post-Course in 2022") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave("Boxplots_pre_post.png")
+
+```
+
+Summary statistics on the remaining 132 participants only!
+
+```{r}
+# Define the components and corresponding columns
+components <- c("Affect", "Cognitive_Competence", "Value", "Difficulty", "Interest", "Effort")
+pre_cols <- paste0(components, "_pre")
+post_cols <- paste0(components, "_post")
+
+# Calculate the statistics for pre- and post-course data
+stats_pre <- combined_2022_individual %>%
+  summarise(across(all_of(pre_cols), list(mean = ~mean(., na.rm = TRUE), 
+                                          median = ~median(., na.rm = TRUE), 
+                                          variance = ~var(., na.rm = TRUE))))
+
+round(stats_pre, 3)
+
+stats_post <- combined_2022_individual %>%
+  summarise(across(all_of(post_cols), list(mean = ~mean(., na.rm = TRUE), 
+                                           median = ~median(., na.rm = TRUE), 
+                                           variance = ~var(., na.rm = TRUE))))
+
+round(stats_post, 3)
+
+```
+
+
 
 ```{r, message=FALSE}
 # Calculate difference in scores for each component
@@ -715,6 +846,7 @@ for (component in components_2022) {
 
 some other tests:
 1. Wilcoxon Signed-Rank Test:
+
 ```{r, message=FALSE}
 # Wilcoxon Signed-Rank Test: 
 for (component in components_2022) {
@@ -739,6 +871,7 @@ for (component in components_2022) {
 ```
 
 2. Bootstrap Methods:
+
 If the confidence interval includes 0, then we do not reject the null hypothesis. This indicates that the difference in means is not statistically significant at the chosen significance level.
 If the confidence interval does not include 0, then we reject the null hypothesis. This indicates that there is a statistically significant difference in means at the chosen significance level.
 
@@ -783,6 +916,7 @@ if (lower_bound > 0 || upper_bound < 0) {
 ```
 
 # Step 7: Cronbach's alpha and confirmatory factor analysis
+
 Cronbach's Alpha is a measure of internal consistency, that is, how closely related a set of items are as a group. A "high" value of alpha (close to 1) is often used as evidence that the items measure an underlying (latent) construct.
 
 ```{r, warning=FALSE}
@@ -792,8 +926,7 @@ components <- list(
   Affect = c("Q3", "Q4", "Q15", "Q18", "Q19", "Q28"),
   Cognitive_Competence = c("Q5", "Q11", "Q26", "Q31", "Q32", "Q35"),
   Value = c("Q7", "Q9", "Q10", "Q13", "Q16", "Q17", "Q21", "Q25", "Q33"),
-  Difficulty1 = c("Q6", "Q22", "Q8"), 
-  Difficulty2 = c("Q24", "Q30", "Q34", "Q36"),
+  Difficulty = c("Q6", "Q22", "Q8", "Q24", "Q30", "Q34", "Q36"), 
   Interest = c("Q12", "Q20", "Q23", "Q29"),
   Effort = c("Q1", "Q2", "Q14", "Q27")
 )
@@ -850,6 +983,7 @@ Confirmatory factor analysis (CFA) is a statistical technique used to verify the
 
 ## Pre 
 ### item(no parcel)
+
 ```{r}
 # Specify the model with renamed latent variables
 model <- ' 
@@ -869,6 +1003,7 @@ fit_pre <- cfa(model, data = Pre_2022_clean)
 summary(fit_pre, fit.measures = TRUE, standardized = TRUE)
 
 ```
+
 Then I want to interpret the output by looking at such indicators:
 
     Chi-Square Test of Model Fit: If the p-value is not significant (p > .05), it suggests that the model fits the data well.
@@ -945,8 +1080,10 @@ semPaths(fit_pre, whatLabels = "est.std", layout = "tree2", style = "lisrel",
          sizeMan = 3, sizeLat = 5) 
 
 ```
+
 ### parcels
 Then test the best model with parcels
+
 ```{r}
 Pre_2022_clean$A1 <- rowMeans(Pre_2022_clean[c("Q3", "Q4", "Q15")], na.rm = TRUE)
 Pre_2022_clean$A2 <- rowMeans(Pre_2022_clean[c("Q18", "Q19", "Q28")], na.rm = TRUE)
